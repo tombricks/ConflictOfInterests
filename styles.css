@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+:root {
+    --CoI_dark_grey: rgb(50, 50, 50);
+    --CoI_super_dark_grey: rgb(25, 25, 25);
+}
+
+html {
+    height: 100%;
+    padding: 0px;
+}
+body {
+    height: 100%;
+    color: whitesmoke;
+    text-shadow: 2px 2px 4px #000000;
+    font-family: 'Ubuntu', sans-serif;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+#left-panel {
+    width: 530px;
+    float: left;
+    background-color: grey;
+    height: 100%;
+    padding: 0px;
+    overflow: hidden;
+    position: absolute;
+}
+#right-panel {
+    margin-left: 530px;
+    position:relative;
+    height: 100%;
+    overflow: auto;
+    padding: 0px;
+}
+.left-element {
+    position: absolute;
+}
+#left-tabs {
+    position: absolute;
+    overflow-x: hidden;
+    top: 108px;
+    left: 0px;
+    width: 100%;
+    bottom: 0px;
+}
+.left-panel-tab {
+    position: absolute;
+    width: 100%;
+    background-color: grey;
+}
+#tooltip {
+    display: inline-block;
+    position: fixed;
+    pointer-events: none;
+    background-color: var(--CoI_dark_grey);
+    padding: 5px;
+    max-width: 300px;
+}
+.shadow {
+    box-shadow: 0 0 4px black;
+}
+.event {
+    width: 450px;
+    background-color: var(--CoI_dark_grey);
+    position: absolute;
+    text-align: center;
+    padding: 16px;
+}
+.event button {
+    width: 100%;
+}
+.diplomacy-tab-entry {
+    width: 498px;
+    padding: 8px;
+    margin: 8px auto;
+    background-color: var(--CoI_dark_grey);
+}
+.decision-tab-entry {
+    width: 498px;
+    padding: 8px;
+    margin: 8px auto;
+    background-color: var(--CoI_dark_grey);
+    position: relative;
+}
+.tab-button {
+    width: 25%;
+    height: 32px;
+    padding: 0px;
+    margin: 0px;
+    background-color: grey;
+    border: 0px;
+    border-left: 2px solid var(--CoI_dark_grey);
+    border-right: 2px solid var(--CoI_dark_grey);
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+    font-weight: bold;
+}
+.tab-button:hover {
+    background-color:  lightgray;
+}
+.tab-button:focus {
+    background-color:  darkgray;
+}
+.tab-button:active {
+    background-color:  grey;
+}
+.decision-button {
+    right: 24px;
+    top: 10px;
+}
+.decision-button:hover {
+    cursor: pointer;
+}

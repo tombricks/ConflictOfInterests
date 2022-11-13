@@ -1,0 +1,15 @@
+{
+	"tiles": {
+		"great-britain":		{ "owner": "GBR"},
+		"northern-ireland":		{ "owner": "GBR"},
+		"ireland":				{ "owner": "EUR"},
+		"france":				{ "owner": "EUR"},
+		"belgium":				{ "owner": "EUR"},
+		"luxembourg":			{ "owner": "EUR"},
+		"netherlands":			{ "owner": "EUR"},
+		"germany":				{ "owner": "EUR"},
+		"austria":				{ "owner": "EUR"},
+		"switzerland":			{ "owner": "EUR"},
+		"italy":				{ "owner": "EUR"}
+	}
+}

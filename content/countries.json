@@ -1,0 +1,42 @@
+{
+    "GBR": {
+        "color": "#DE8787",
+        "name": "GBR",
+        "long_name": "GBR_long",
+        "flag": "GBR.png",
+        "politics": {
+            "positions": {
+                "head_of_state": {
+                    "title": { "f": "title_queen", "m": "title_king", "nb": "title_quing" },
+                    "person": "GBR_Charles_III"
+                },
+                "head_of_government": {
+                    "title": "title_prime_minister",
+                    "person": "GBR_Rishi_Sunak",
+                    "deputy": "deputy_prime_minister"
+                },
+                "deputy_prime_minister": {
+                    "title": "title_deputy_prime_minister",
+                    "person": "GBR_Dominic_Raab"
+                },
+                "chancellor": {
+                    "title": "title_chancellor_exchequer",
+                    "person": "GBR_Jeremy_Hunt"
+                },
+                "opposition_leader": {
+                    "title": "title_opposition_leader",
+                    "person": "GBR_Keir_Starmer"
+                }
+            },
+            "main_leaders": [ "head_of_state", "head_of_government" ],
+            "government_members": [ "head_of_government", "deputy_prime_minister", "chancellor" ],
+            "other_positions": [ "opposition_leader" ]
+        }
+    },
+    "EUR": {
+        "color": "#003380",
+        "name": "EUR",
+        "long_name": "EUR_long",
+        "flag": "EUR.png"
+    }
+}

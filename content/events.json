@@ -1,0 +1,12 @@
+{
+    "GBR_test": {
+        "title": "GBR_test.title",
+        "desc": "GBR_test.desc",
+        "options": [
+            {
+                "name": "guh",
+                "effects": []
+            }
+        ]
+    }
+}

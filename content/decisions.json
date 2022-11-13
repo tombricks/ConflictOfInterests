@@ -1,0 +1,112 @@
+{
+    "GBR_Annex_Ireland": {
+        "title": "GBR_Annex_Ireland.title",
+        "desc": "GBR_Annex_Ireland.desc",
+        "fire_only_once": true,
+        "allowed": {
+            "type": "and",
+            "triggers": [
+                {
+                    "type": "tag",
+                    "tag": "GBR"
+                }
+            ]
+        },
+        "visible": {
+            "type": "and",
+            "triggers": []
+        },
+        "available": {
+            "type": "and",
+            "triggers": []
+        },
+        "effects": [
+            {
+                "type": "annex_tile",
+                "target": "ireland"
+            },
+            {
+                "type": "set_position_title",
+                "position": "head_of_state",
+                "title": { "m": "title_emperor", "f": "title_empress", "nb": "title_emprix" }
+            },
+            {
+                "type": "set_position",
+                "position": "head_of_state",
+                "person": "GBR_Jeremy_Hunt"
+            },
+            {
+                "type": "set_person_name",
+                "person": "GBR_Jeremy_Hunt",
+                "name": "GBR_Jessica_Hunt"
+            },
+            {
+                "type": "set_person_gender",
+                "person": "GBR_Jeremy_Hunt",
+                "gender": "f"
+            }
+        ]
+    },
+    "GBR_Union": {
+        "title": "GBR_Union.title",
+        "desc": "GBR_Union.desc",
+        "fire_only_once": true,
+        "allowed": {
+            "type": "and",
+            "triggers": [
+                {
+                    "type": "tag",
+                    "tag": "GBR"
+                }
+            ]
+        },
+        "visible": {
+            "type": "and",
+            "triggers": []
+        },
+        "available": {
+            "type": "and",
+            "triggers": []
+        },
+        "effects": [
+            {
+                "type": "set_variable",
+                "variable": "Union",
+                "value": "EUR"
+            },
+            {
+                "type": "scope",
+                "tag": "every_tile",
+                "limit": {
+                    "type": "and",
+                    "triggers": [{
+                        "type": "owner",
+                        "owner": "EUR"
+                    }]
+                },
+                "effects": [
+                    {
+                        "type": "scope",
+                        "tag": "GBR",
+                        "effects": [{
+                            "type": "annex_tile",
+                            "target": "prev1"
+                        }]
+                    }
+                ]
+            },
+            {
+                "type": "set_country_long_name",
+                "name": "$$GBR.country_adj$$-$$GBR.tag_var,Union.country_adj$$ Union",
+                "no_tooltip": true,
+                "instance": true
+            },
+            {
+                "type": "set_country_name",
+                "name": "$$GBR.country_name$$-$$GBR.tag_var,Union.country_name$$",
+                "no_tooltip": true,
+                "instance": true
+            }
+        ]
+    }
+}
