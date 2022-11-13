@@ -1,3 +1,5 @@
+var CONTENT_PREFIX = ``;
+
 var data_tiles = {}
 var data_countries = {}
 var data_player = ""
@@ -131,12 +133,22 @@ function politics_tab_generate() {
     var txt_main = "";
     var politics = data_countries[data_player].politics;
     for (person of politics.main_leaders) {
-        txt_main += `<td style="width:${(100/politics.main_leaders.length).toPrecision(5)}%">
+        if (is_position_vacant(person, data_player)) {
+            txt_main += `<td style="width:${(100/politics.main_leaders.length).toPrecision(5)}%">
+            <h2>${get_localisation(`$$this.position_title,${person}`)}</h2>
+            <img class="shadow" style="width:100px" src="assets/portraits/unknown.png" />
+            <br>
+            <i>Vacant</i>
+        </td>`
+        }
+        else {
+            txt_main += `<td style="width:${(100/politics.main_leaders.length).toPrecision(5)}%">
             <h2>${get_localisation(`$$this.position_title,${person}`)}</h2>
             <img class="shadow" style="width:100px" src="assets/portraits/${data_people[politics.positions[person].person].portrait}" />
             <br>
             ${get_localisation(data_people[politics.positions[person].person].name)}
         </td>`
+        }
     }
     var txt_govt = "";
     var txt_govt_title = "";
@@ -144,9 +156,16 @@ function politics_tab_generate() {
     var txt_govt_name = "";
     var i = 0;
     for (person of politics.government_members) {
-        txt_govt_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
-        txt_govt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/${data_people[politics.positions[person].person].portrait}" /></td>`
-        txt_govt_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
+        if (is_position_vacant(person, data_player)) {
+            txt_govt_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
+            txt_govt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/unknown.png" /></td>`
+            txt_govt_name += get_localisation(`<td style="width:33.333%"><i>Vacant</i></td>`);
+        }
+        else {
+            txt_govt_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
+            txt_govt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/${data_people[politics.positions[person].person].portrait}" /></td>`
+            txt_govt_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
+        }
         if ((i+1) % 3 == 0) {
             txt_govt += `<tr>${txt_govt_title}</tr><tr>${txt_govt_portrait}</tr><tr>${txt_govt_name}</tr>`
             txt_govt_title = "";
@@ -163,9 +182,16 @@ function politics_tab_generate() {
     var txt_other_name = "";
     var i = 0;
     for (person of politics.other_positions) {
-        txt_other_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
-        txt_other_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/${data_people[politics.positions[person].person].portrait}" /></td>`
-        txt_other_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
+        if (is_position_vacant(person, data_player)) {
+            txt_other_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
+            txt_other_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/unknown.png" /></td>`
+            txt_other_name += get_localisation(`<td style="width:33.333%"><i>Vacant</i></td>`);
+        }
+        else {
+            txt_other_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
+            txt_other_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/${data_people[politics.positions[person].person].portrait}" /></td>`
+            txt_other_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
+        }
         if ((i+1) % 3 == 0) {
             txt_other += `<tr>${txt_other_title}</tr><tr>${txt_other_portrait}</tr><tr>${txt_other_name}</tr>`
             txt_other_title = "";
@@ -288,6 +314,27 @@ function get_localisation(text, scopes=[data_player]) {
                         break;
                     case "portrait":
                         left = data_people[left].portrait;
+                        break;
+
+                    case "person_gender":
+                        left = data_people[left].gender;
+                        break;
+                    
+                    case "get_he_she_pronoun":
+                        left = get_localisation("pronoun_"+left+"_he_she", scopes);
+                        break;
+                    case "get_him_her_pronoun":
+                        left = get_localisation("pronoun_"+left+"_him_her", scopes);
+                        break;
+                    case "get_his_her_pronoun":
+                        left = get_localisation("pronoun_"+left+"_his_her", scopes);
+                        break;
+                    case "get_his_hers_pronoun":
+                        left = get_localisation("pronoun_"+left+"_his_hers", scopes);
+                        break;
+                    case "get_himself_herself_pronoun":
+                        left = get_localisation("pronoun_"+left+"_himself_herself", scopes);
+                        break;
                 }
             }
             elements[i] = left;
@@ -315,7 +362,7 @@ $( document ).on( "mousemove", function( event ) {
 // CORE STUFF
 $(window).on('load', function() {
     function load_data() {
-        $.getJSON("content/countries.json", function(json) {
+        $.getJSON(CONTENT_PREFIX+"content/countries.json", function(json) {
             data_countries = json;
             for (country in data_countries) {
                 if (data_countries[country].color === undefined) {
@@ -338,7 +385,7 @@ $(window).on('load', function() {
 
                 data_variables[country] = {};
             }
-            $.getJSON("content/map.json", function(json) {
+            $.getJSON(CONTENT_PREFIX+"content/map.json", function(json) {
                 data_tiles = json.tiles;
                 for (key in data_tiles) {
                     if (!data_tiles[key].name) {
@@ -351,9 +398,9 @@ $(window).on('load', function() {
                     data_variables[key] = {};
                 }
                 load_map_style();
-                $.getJSON("content/events.json", function(json) {
+                $.getJSON(CONTENT_PREFIX+"content/events.json", function(json) {
                     data_events = json;
-                    $.getJSON("content/decisions.json", function(json) {
+                    $.getJSON(CONTENT_PREFIX+"content/decisions.json", function(json) {
                         data_decisions = json;
                         for (decision in data_decisions) {
                             for (country in data_countries) {
@@ -362,14 +409,14 @@ $(window).on('load', function() {
                                 }
                             }
                         }
-                        $.getJSON("content/people.json", function(json) {
+                        $.getJSON(CONTENT_PREFIX+"content/people.json", function(json) {
                             data_people = json;
                             for(person in data_people) {
                                 data_variables[person] = {};
                             }
-                            $.getJSON("assets/localisation.json", function(json) {
+                            $.getJSON(CONTENT_PREFIX+"assets/localisation.json", function(json) {
                                 localisation = json;
-                                $.getJSON("content/config.json", function(json) {
+                                $.getJSON(CONTENT_PREFIX+"content/config.json", function(json) {
                                     load_player(json.player);
                                     do_turn();
                                     diplomacy_tab_generate();
@@ -647,7 +694,12 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 var position = get_token(effect.position, scopes);
                 var person = get_token(effect.person, scopes);
                 if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">${get_localisation(get_position_title(position, scope, data_people[person].gender), scopes)}</span><br>`, scopes);
+                    if (!(person in data_people) || person === undefined || person.trim() == '') {
+                        tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">vacant</span><br>`, scopes);
+                    }
+                    else {
+                        tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">${get_localisation(get_position_title(position, scope, data_people[person].gender), scopes)}</span><br>`, scopes);
+                    }
                 }
                 if (execute && !effect.no_execute) {
                     data_countries[scope].politics.positions[position].person = person;
@@ -888,4 +940,13 @@ function fire_decision(decision, tag) {
 function change_tile_owner(tile, owner) {
     data_tiles[tile].owner = owner;
     tile_style(tile);
+}
+function is_position_vacant(position, tag) {
+    var pers = data_countries[tag].politics.positions[position].person;
+    if (!(pers in data_people) || pers === undefined || pers.trim() == '') {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
