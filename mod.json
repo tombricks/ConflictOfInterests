@@ -17,7 +17,9 @@
         "content/events.json"
     ],
     "localisation": [
-        "assets/localisation.json"
+        "localisation/tiles.json",
+        "localisation/countries.json",
+        "localisation/other.json"
     ],
     "default_tag": "GBR"
 }

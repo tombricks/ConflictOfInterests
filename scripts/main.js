@@ -355,6 +355,10 @@ $( document ).on( "mousemove", function( event ) {
     }
 });
 
+function logic_error_log(text) {
+    console.log(`%c${text}`, 'background-color: red; color: white; font-weight:bold;')
+    console.trace();
+}
 
 // CORE STUFF
 $(window).on('load', function() {
@@ -503,9 +507,21 @@ $(window).on('load', function() {
         for (country in data_countries) {
             data_countries[country].color = data_countries[country].color || `#${Math.floor(Math.random()*16777215).toString(16)}`
             data_countries[country].name = data_countries[country].name || country;
-            data_countries[country].name = data_countries[country].adj || country+"_ADJ";
-            data_countries[country].long_name = data_countries[country].long_name || data_countries[country].name;
+            data_countries[country].adj = data_countries[country].adj || country+"_ADJ";
+            if (country+"_long" in localisation) {
+                data_countries[country].long_name = data_countries[country].long_name || country+"_long";
+            }
+            else {
+                data_countries[country].long_name = data_countries[country].long_name || data_countries[country].name;
+            }
             data_countries[country].flag = data_countries[country].flag || "assets/flags/blank.png";
+
+            data_countries[country].politics = data_countries[country].politics || {
+                "positions": {},
+                "main_leaders": [],
+                "government_members": [],
+                "other_positions": []
+            };
 
             data_countries[country].original_name = data_countries[country].name;
             data_countries[country].original_long_name = data_countries[country].long_name;
@@ -541,18 +557,19 @@ $(window).on('load', function() {
         for (key in data_tiles) {
             data_variables[key] = {};
         }
+        $("svg").attr("id", "svg-map")
         load_player(data_player);
         do_turn();
         diplomacy_tab_generate();
         load_map_style();
-        $("svg").removeAttr("width");
-        $("svg").removeAttr("height");
-        $("svg").css("height", "100vh");
-        $("svg").css("width", "100%");
-        $("svg").css("display", "block");
-        $("svg").css("margin", "auto");
-        $("svg").css("background-color", "green");
-        $("svg").svgPanZoom(
+        $("#svg-map").removeAttr("width");
+        $("#svg-map").removeAttr("height");
+        $("#svg-map").css("height", "100vh");
+        $("#svg-map").css("width", "100%");
+        $("#svg-map").css("display", "block");
+        $("#svg-map").css("margin", "auto");
+        $("#svg-map").css("background-color", "green");
+        $("#svg-map").svgPanZoom(
             {
                 maxZoom: 100, 
                 animationTime: 0,
@@ -800,37 +817,47 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 break;
             case "set_position_title":
                 var position = get_token(effect.position, scopes);
-                if (tooltip && !effect.no_tooltip) {
-                    if ($.type(effect.title) === "string") {
-                        tt += get_localisation(`${emb}The <span style="color:yellow">$$${scope}.position_title,${position}$$</span> position becomes the <span style="color:yellow">${get_localisation(effect.title, scopes)}</span><br>`, scopes);
+                if (has_position(position, scope)) {
+                    if (tooltip && !effect.no_tooltip) {
+                        if ($.type(effect.title) === "string") {
+                            tt += get_localisation(`${emb}The <span style="color:yellow">$$${scope}.position_title,${position}$$</span> position becomes the <span style="color:yellow">${get_localisation(effect.title, scopes)}</span><br>`, scopes);
+                        }
+                        else {
+                            tt += get_localisation(`${emb}The <span style="color:yellow">$$${scope}.position_title,${position}$$</span> position becomes the <span style="color:yellow">${get_localisation((effect.title[data_people[data_countries[scope].politics.positions[position].person].gender]) ?? 'm', scopes)}</span><br>`, scopes);
+                        }
                     }
-                    else {
-                        tt += get_localisation(`${emb}The <span style="color:yellow">$$${scope}.position_title,${position}$$</span> position becomes the <span style="color:yellow">${get_localisation((effect.title[data_people[data_countries[scope].politics.positions[position].person].gender]) ?? 'm', scopes)}</span><br>`, scopes);
+                    if (execute && !effect.no_execute) {
+                        data_countries[scope].politics.positions[position].title = effect.title;
+                        if (scope == data_player) {
+                            politics_tab_generate();
+                        }
                     }
                 }
-                if (execute && !effect.no_execute) {
-                    data_countries[scope].politics.positions[position].title = effect.title;
-                    if (scope == data_player) {
-                        politics_tab_generate();
-                    }
+                else {
+                    logic_error_log(`Logic error: set_position_title: "${scope}" has no position "${position}"`);
                 }
                 break;
             case "set_position":
                 var position = get_token(effect.position, scopes);
                 var person = get_token(effect.person, scopes);
-                if (tooltip && !effect.no_tooltip) {
-                    if (!(person in data_people) || person === undefined || person.trim() == '') {
-                        tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">vacant</span><br>`, scopes);
+                if (has_position(position, scope)) {
+                    if (tooltip && !effect.no_tooltip) {
+                        if (!(person in data_people) || person === undefined || person.trim() == '') {
+                            tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">vacant</span><br>`, scopes);
+                        }
+                        else {
+                            tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">${get_localisation(get_position_title(position, scope, data_people[person].gender), scopes)}</span><br>`, scopes);
+                        }
                     }
-                    else {
-                        tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">${get_localisation(get_position_title(position, scope, data_people[person].gender), scopes)}</span><br>`, scopes);
+                    if (execute && !effect.no_execute) {
+                        data_countries[scope].politics.positions[position].person = person;
+                        if (scope == data_player) {
+                            politics_tab_generate();
+                        }
                     }
                 }
-                if (execute && !effect.no_execute) {
-                    data_countries[scope].politics.positions[position].person = person;
-                    if (scope == data_player) {
-                        politics_tab_generate();
-                    }
+                else {
+                    logic_error_log(`Logic error: set_position: "${scope}" has no position "${position}"`);
                 }
                 break;
             case "set_person_gender":
@@ -864,7 +891,8 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
     if (trigger_block.not === undefined) {
         trigger_block.not = false;
     }
-    switch (trigger_block.type) {
+    var trigger_block_type = trigger_block.type || "and";
+    switch (trigger_block_type) {
         case "and":
             evaluation = true;
             if (trigger_block.not) {
@@ -916,7 +944,8 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 break;
             case "tag":
                 tt2 = get_localisation(`Is <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
-                if (target == scope) {
+                var tag = get_token(trigger.tag, scopes);
+                if (tag == scope) {
                     local = true;
                 }
                 else {
@@ -1058,7 +1087,7 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
         }
         if (local) {
             tt += `${emb}${text_icons["true"]} ${tt2}`;
-            switch (trigger_block.type) {
+            switch (trigger_block_type) {
                 case "or":
                     evaluation = true;
                     break;
@@ -1066,7 +1095,7 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
         }
         else {
             tt += `${emb}${text_icons["false"]} ${tt2}`;
-            switch (trigger_block.type) {
+            switch (trigger_block_type) {
                 case "and":
                     evaluation = false;
                     break;
@@ -1189,6 +1218,9 @@ function fire_decision(decision, tag) {
 function change_tile_owner(tile, owner) {
     data_tiles[tile].owner = owner;
     tile_style(tile);
+}
+function has_position(position, tag) {
+    return position in data_countries[tag].politics.positions;
 }
 function is_position_vacant(position, tag) {
     var pers = data_countries[tag].politics.positions[position].person;

@@ -4,11 +4,15 @@
         "desc": "GBR_Annex_Ireland.desc",
         "fire_only_once": true,
         "allowed": {
-            "type": "and",
+            "type": "or",
             "triggers": [
                 {
                     "type": "tag",
                     "tag": "GBR"
+                },
+                {
+                    "type": "tag",
+                    "tag": "RUS"
                 }
             ]
         },
@@ -66,44 +70,13 @@
         },
         "available": {
             "type": "and",
-            "triggers": [
-                {
-                    "type": "tag",
-                    "target": "GBR"
-                },
-                {
-                    "type": "scope",
-                    "tag": "EUR",
-                    "limit": {
-                        "type": "or",
-                        "triggers": [
-                            {
-                                "type": "tag",
-                                "tag": "EUR"
-                            },
-                            {
-                                "type": "tag",
-                                "tag": "GBR"
-                            }
-                        ]
-                    },
-                    "triggers": {
-                        "type": "and",
-                        "triggers": [
-                            {
-                                "type": "owns_tile",
-                                "target": "northern-ireland"
-                            }
-                        ]
-                    }
-                }
-            ]
+            "triggers": []
         },
         "effects": [
             {
                 "type": "set_variable",
                 "variable": "Union",
-                "value": "EUR"
+                "value": "IRE"
             },
             {
                 "type": "scope",
@@ -112,7 +85,7 @@
                     "type": "and",
                     "triggers": [{
                         "type": "owner",
-                        "target": "EUR"
+                        "target": "IRE"
                     }]
                 },
                 "effects": [
@@ -145,7 +118,7 @@
                     "type": "and",
                     "triggers": [{
                         "type": "tag",
-                        "target": "EUR"
+                        "target": "IRE"
                     }]
                 },
                 "effects": []
