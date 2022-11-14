@@ -359,6 +359,7 @@ $( document ).on( "mousemove", function( event ) {
 // CORE STUFF
 $(window).on('load', function() {
     function load_data() {
+        var maps = [];
         $.ajaxSetup({
             async: false
         });
@@ -488,6 +489,9 @@ $(window).on('load', function() {
                     }
                 }
                 data_player = mod_json.default_tag;
+                if (mod_json.mapsvg !== undefined) {
+                    maps.push(dir+mod_json.mapsvg);
+                }
             });
         }
         for (country in data_countries) {
@@ -503,6 +507,9 @@ $(window).on('load', function() {
             data_countries[country].visible_decisions = [];
             data_countries[country].available_decisions = [];
         }
+        $("#map-container").load(maps[maps.length-1], function() {
+            console.log("Loaded map: "+maps[maps.length-1]);
+        });
         for (key in data_tiles) {
             if (!data_tiles[key].name) {
                 data_tiles[key].name = "tile_" + key;

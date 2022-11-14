@@ -39,8 +39,10 @@
             </div>
             <div id="right-panel">
                 <?php
-                echo file_get_contents("assets/worldmap.svg");
+                //echo file_get_contents("assets/worldmap.svg");
                 ?>
+                <div id="map-container">
+                </div>
                 <button id="next-turn" onclick="do_turn()" style="position:absolute;right:8px;top:8px;">Next Turn</button>
             </div>
         </div>
