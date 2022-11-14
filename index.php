@@ -5,6 +5,16 @@
         <link rel="stylesheet" href="styles.css">
         <script src="scripts/jquery-3.6.1.js"></script>
         <script src="scripts/jquery.svg.pan.zoom.js"></script>
+        <?php
+        if (isset($_GET["mods"])) {
+            $mods = explode(',', $_GET["mods"]);
+            $mods = array_merge([""], $mods);
+        }
+        else {
+            $mods = [""];
+        }
+        ?>
+        <script> var mods = <?php echo json_encode($mods); ?>;</script>
         <script src="scripts/main.js"></script>
     </head>
     <body>

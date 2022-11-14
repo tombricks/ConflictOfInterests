@@ -358,7 +358,6 @@ $( document ).on( "mousemove", function( event ) {
 
 // CORE STUFF
 $(window).on('load', function() {
-    var mods = [""];
     function load_data() {
         $.ajaxSetup({
             async: false
