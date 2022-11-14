@@ -488,59 +488,60 @@ $(window).on('load', function() {
                         });
                     }
                 }
-                for (country in data_countries) {
-                    data_countries[country].color = data_countries[country].color || `#${Math.floor(Math.random()*16777215).toString(16)}`
-                    data_countries[country].name = data_countries[country].name || country;
-                    data_countries[country].name = data_countries[country].adj || country+"_ADJ";
-                    data_countries[country].long_name = data_countries[country].long_name || data_countries[country].name;
-                    data_countries[country].flag = data_countries[country].flag || "blank.png";
-
-                    data_countries[country].original_name = data_countries[country].name;
-                    data_countries[country].original_long_name = data_countries[country].long_name;
-                    data_countries[country].allowed_decisions = [];
-                    data_countries[country].visible_decisions = [];
-                    data_countries[country].available_decisions = [];
-                }
-                for (key in data_tiles) {
-                    if (!data_tiles[key].name) {
-                        data_tiles[key].name = "tile_" + key;
-                    }
-                    $("#tile-"+key).attr('onclick', 'on_tile_click("'+key+'")');
-                    $("#tile-"+key).attr('onmouseover', 'on_tile_over("'+key+'")');
-                    $("#tile-"+key).attr('onmouseout', 'clear_tooltip()');
-                    $("#tile-"+key).attr('data-tile', key);
-                }
-                for (decision in data_decisions) {
-                    for (country in data_countries) {
-                        if (run_trigger(data_decisions[decision].allowed, [country])[0]) {
-                            data_countries[country].allowed_decisions.push(decision);
-                        }
-                    }
-                }
-                for (key in data_countries) {
-                    data_variables[key] = {};
-                }
-                for (key in data_people) {
-                    data_variables[key] = {};
-                }
-                for (key in data_tiles) {
-                    data_variables[key] = {};
-                }
+                data_player = mod_json.default_tag;
             });
-            load_player("GBR");
-            do_turn();
-            diplomacy_tab_generate();
-            load_map_style();
-            $("svg").svgPanZoom(
-                {
-                    maxZoom: 100, 
-                    animationTime: 0,
-                    zoomFactor: 0.05,
-                    initialViewBox: "250 0 500 500",
-                    limit: { x:-0, y:-0, x2:1000, y2:1000 }
-                }
-            );
         }
+        for (country in data_countries) {
+            data_countries[country].color = data_countries[country].color || `#${Math.floor(Math.random()*16777215).toString(16)}`
+            data_countries[country].name = data_countries[country].name || country;
+            data_countries[country].name = data_countries[country].adj || country+"_ADJ";
+            data_countries[country].long_name = data_countries[country].long_name || data_countries[country].name;
+            data_countries[country].flag = data_countries[country].flag || "blank.png";
+
+            data_countries[country].original_name = data_countries[country].name;
+            data_countries[country].original_long_name = data_countries[country].long_name;
+            data_countries[country].allowed_decisions = [];
+            data_countries[country].visible_decisions = [];
+            data_countries[country].available_decisions = [];
+        }
+        for (key in data_tiles) {
+            if (!data_tiles[key].name) {
+                data_tiles[key].name = "tile_" + key;
+            }
+            $("#tile-"+key).attr('onclick', 'on_tile_click("'+key+'")');
+            $("#tile-"+key).attr('onmouseover', 'on_tile_over("'+key+'")');
+            $("#tile-"+key).attr('onmouseout', 'clear_tooltip()');
+            $("#tile-"+key).attr('data-tile', key);
+        }
+        for (decision in data_decisions) {
+            for (country in data_countries) {
+                if (run_trigger(data_decisions[decision].allowed, [country])[0]) {
+                    data_countries[country].allowed_decisions.push(decision);
+                }
+            }
+        }
+        for (key in data_countries) {
+            data_variables[key] = {};
+        }
+        for (key in data_people) {
+            data_variables[key] = {};
+        }
+        for (key in data_tiles) {
+            data_variables[key] = {};
+        }
+        load_player(data_player);
+        do_turn();
+        diplomacy_tab_generate();
+        load_map_style();
+        $("svg").svgPanZoom(
+            {
+                maxZoom: 100, 
+                animationTime: 0,
+                zoomFactor: 0.05,
+                initialViewBox: "250 0 500 500",
+                limit: { x:-0, y:-0, x2:1000, y2:1000 }
+            }
+        );
     }
     load_data();
 });
