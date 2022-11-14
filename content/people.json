@@ -1,27 +1,27 @@
 {
     "GBR_Charles_III": {
         "name": "GBR_Charles_III",
-        "portrait": "GBR_Charles_III.png",
+        "portrait": "assets/portraits/GBR_Charles_III.png",
         "gender": "m"
     },
     "GBR_Rishi_Sunak": {
         "name": "GBR_Rishi_Sunak",
-        "portrait": "GBR_Rishi_Sunak.png",
+        "portrait": "assets/portraits/GBR_Rishi_Sunak.png",
         "gender": "m"
     },
     "GBR_Dominic_Raab": {
         "name": "GBR_Dominic_Raab",
-        "portrait": "GBR_Dominic_Raab.png",
+        "portrait": "assets/portraits/GBR_Dominic_Raab.png",
         "gender": "m"
     },
     "GBR_Jeremy_Hunt": {
         "name": "GBR_Jeremy_Hunt",
-        "portrait": "GBR_Jeremy_Hunt.png",
+        "portrait": "assets/portraits/GBR_Jeremy_Hunt.png",
         "gender": "m"
     },
     "GBR_Keir_Starmer": {
         "name": "GBR_Keir_Starmer",
-        "portrait": "GBR_Keir_Starmer.png",
+        "portrait": "assets/portraits/GBR_Keir_Starmer.png",
         "gender": "m"
     }
 }

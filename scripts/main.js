@@ -23,7 +23,7 @@ var text_icons = {
 // USER INTERFACE STUFF
 function return_flag(flag, width, height) {
     return `<div style="position:relative;display:inline-block;width:${width}px;vertical-align:top;top:2px;">
-    <img src="assets/flags/${flag}" style="position:absolute;left:0px;top:0px;width:${width}px;height:${height}px"></img>
+    <img src="${flag}" style="position:absolute;left:0px;top:0px;width:${width}px;height:${height}px"></img>
     <img src="assets/interface/flag_overlay.png" style="position:absolute;left:0px;top:0px;width:${width}px;height:${height}px"></img>
     </div>`
 }
@@ -74,7 +74,7 @@ function handle_mousedown(e){
 }
 function load_player(tag) {
     data_player = tag;
-    $("#player-flag").attr("src", "assets/flags/"+data_countries[data_player].flag);
+    $("#player-flag").attr("src", data_countries[data_player].flag);
     $("#player-title").html(get_localisation(data_countries[data_player].long_name));
     diplomacy_tab_generate();
 }
@@ -141,7 +141,7 @@ function politics_tab_generate() {
         else {
             txt_main += `<td style="width:${(100/politics.main_leaders.length).toPrecision(5)}%">
             <h2>${get_localisation(`$$this.position_title,${person}`)}</h2>
-            <img class="shadow" style="width:100px" src="assets/portraits/${data_people[politics.positions[person].person].portrait}" />
+            <img class="shadow" style="width:100px" src="${data_people[politics.positions[person].person].portrait}" />
             <br>
             ${get_localisation(data_people[politics.positions[person].person].name)}
         </td>`
@@ -160,7 +160,7 @@ function politics_tab_generate() {
         }
         else {
             txt_govt_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
-            txt_govt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/${data_people[politics.positions[person].person].portrait}" /></td>`
+            txt_govt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="${data_people[politics.positions[person].person].portrait}" /></td>`
             txt_govt_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
         }
         if ((i+1) % 3 == 0) {
@@ -186,7 +186,7 @@ function politics_tab_generate() {
         }
         else {
             txt_other_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
-            txt_other_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/${data_people[politics.positions[person].person].portrait}" /></td>`
+            txt_other_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="${data_people[politics.positions[person].person].portrait}" /></td>`
             txt_other_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
         }
         if ((i+1) % 3 == 0) {
@@ -499,7 +499,7 @@ $(window).on('load', function() {
             data_countries[country].name = data_countries[country].name || country;
             data_countries[country].name = data_countries[country].adj || country+"_ADJ";
             data_countries[country].long_name = data_countries[country].long_name || data_countries[country].name;
-            data_countries[country].flag = data_countries[country].flag || "blank.png";
+            data_countries[country].flag = data_countries[country].flag || "assets/flags/blank.png";
 
             data_countries[country].original_name = data_countries[country].name;
             data_countries[country].original_long_name = data_countries[country].long_name;

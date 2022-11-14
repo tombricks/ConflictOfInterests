@@ -3,7 +3,7 @@
         "color": "#DE8787",
         "name": "GBR",
         "long_name": "GBR_long",
-        "flag": "GBR.png",
+        "flag": "assets/flags/GBR.png",
         "politics": {
             "positions": {
                 "head_of_state": {
@@ -37,6 +37,6 @@
         "color": "#003380",
         "name": "EUR",
         "long_name": "EUR_long",
-        "flag": "EUR.png"
+        "flag": "assets/flags/EUR.png"
     }
 }
