@@ -5,7 +5,23 @@
         "options": [
             {
                 "name": "guh",
-                "effects": []
+                "ai": [ { "type": "add", "value": 50 } ],
+                "effects": [
+                    {
+                        "type": "annex_tile",
+                        "target": "ireland"
+                    }
+                ]
+            },
+            {
+                "name": "guh2",
+                "ai": [ { "type": "add", "value": 13 } ],
+                "effects": [
+                    {
+                        "type": "annex_tile",
+                        "target": "germany"
+                    }
+                ]
             }
         ]
     }

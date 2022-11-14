@@ -31,9 +31,6 @@ function on_tile_click(tile) {
     if (window.event.ctrlKey) {
         load_player(data_tiles[tile].owner);
     }
-    else {
-        alert(tile);
-    }
 }
 function on_tile_over(tile) {
     tooltip_text = `<b style="color:yellow">${get_localisation(data_tiles[tile].name)}</b><br>${return_flag(data_countries[data_tiles[tile].owner].flag, 25, 17)} ${get_localisation(data_countries[data_tiles[tile].owner].long_name)}`;
@@ -293,7 +290,7 @@ function get_localisation(text, scopes=[data_player]) {
                         left = get_localisation(data_countries[get_token(left, scopes)].long_name);
                         break;
                     case "country_adj":
-                        left = get_localisation(data_countries[get_token(left, scopes)].name+"_ADJ");
+                        left = get_localisation(data_countries[get_token(left, scopes)].adj);
                         break;
                     case "owner_tag":
                         left = data_tiles[get_token(left, scopes)].owner;
@@ -361,8 +358,13 @@ $( document ).on( "mousemove", function( event ) {
 
 // CORE STUFF
 $(window).on('load', function() {
+    var mods = [""];
     function load_data() {
-        $.getJSON(CONTENT_PREFIX+"content/countries.json", function(json) {
+        $.ajaxSetup({
+            async: false
+        });
+        for (dir of mods) {
+        /* $.getJSON("content/countries.json", function(json) {
             data_countries = json;
             for (country in data_countries) {
                 if (data_countries[country].color === undefined) {
@@ -385,7 +387,7 @@ $(window).on('load', function() {
 
                 data_variables[country] = {};
             }
-            $.getJSON(CONTENT_PREFIX+"content/map.json", function(json) {
+            $.getJSON("content/map.json", function(json) {
                 data_tiles = json.tiles;
                 for (key in data_tiles) {
                     if (!data_tiles[key].name) {
@@ -398,9 +400,9 @@ $(window).on('load', function() {
                     data_variables[key] = {};
                 }
                 load_map_style();
-                $.getJSON(CONTENT_PREFIX+"content/events.json", function(json) {
+                $.getJSON("content/events.json", function(json) {
                     data_events = json;
-                    $.getJSON(CONTENT_PREFIX+"content/decisions.json", function(json) {
+                    $.getJSON("content/decisions.json", function(json) {
                         data_decisions = json;
                         for (decision in data_decisions) {
                             for (country in data_countries) {
@@ -409,14 +411,14 @@ $(window).on('load', function() {
                                 }
                             }
                         }
-                        $.getJSON(CONTENT_PREFIX+"content/people.json", function(json) {
+                        $.getJSON("content/people.json", function(json) {
                             data_people = json;
                             for(person in data_people) {
                                 data_variables[person] = {};
                             }
-                            $.getJSON(CONTENT_PREFIX+"assets/localisation.json", function(json) {
+                            $.getJSON("assets/localisation.json", function(json) {
                                 localisation = json;
-                                $.getJSON(CONTENT_PREFIX+"content/config.json", function(json) {
+                                $.getJSON("content/config.json", function(json) {
                                     load_player(json.player);
                                     do_turn();
                                     diplomacy_tab_generate();
@@ -436,7 +438,109 @@ $(window).on('load', function() {
                     });
                 });
             });
-        });
+        }); */
+            $.getJSON(dir+"mod.json", function (mod_json) {
+                if (mod_json.countries !== undefined) {
+                    for (new_file of mod_json.countries) {
+                        $.getJSON(dir+new_file, function (new_json) {
+                            data_countries = {...data_countries, ...new_json};
+                            console.log(`Loaded: ${dir}${new_file}`);
+                        });
+                    }
+                }
+                if (mod_json.map !== undefined) {
+                    for (new_file of mod_json.map) {
+                        $.getJSON(dir+new_file, function (new_json) {
+                            data_tiles = {...data_tiles, ...new_json.tiles};
+                            console.log(`Loaded: ${dir}${new_file}`);
+                        });
+                    }
+                }
+                if (mod_json.people !== undefined) {
+                    for (new_file of mod_json.people) {
+                        $.getJSON(dir+new_file, function (new_json) {
+                            data_people = {...data_people, ...new_json};
+                            console.log(`Loaded: ${dir}${new_file}`);
+                        });
+                    }
+                }
+                if (mod_json.decisions !== undefined) {
+                    for (new_file of mod_json.decisions) {
+                        $.getJSON(dir+new_file, function (new_json) {
+                            data_decisions = {...data_decisions, ...new_json};
+                            console.log(`Loaded: ${dir}${new_file}`);
+                        });
+                    }
+                }
+                if (mod_json.events !== undefined) {
+                    for (new_file of mod_json.events) {
+                        $.getJSON(dir+new_file, function (new_json) {
+                            data_events = {...data_events, ...new_json};
+                            console.log(`Loaded: ${dir}${new_file}`);
+                        });
+                    }
+                }
+                if (mod_json.localisation !== undefined) {
+                    for (new_file of mod_json.localisation) {
+                        $.getJSON(dir+new_file, function (new_json) {
+                            localisation = {...localisation, ...new_json};
+                            console.log(`Loaded: ${dir}${new_file}`);
+                        });
+                    }
+                }
+                for (country in data_countries) {
+                    data_countries[country].color = data_countries[country].color || `#${Math.floor(Math.random()*16777215).toString(16)}`
+                    data_countries[country].name = data_countries[country].name || country;
+                    data_countries[country].name = data_countries[country].adj || country+"_ADJ";
+                    data_countries[country].long_name = data_countries[country].long_name || data_countries[country].name;
+                    data_countries[country].flag = data_countries[country].flag || "blank.png";
+
+                    data_countries[country].original_name = data_countries[country].name;
+                    data_countries[country].original_long_name = data_countries[country].long_name;
+                    data_countries[country].allowed_decisions = [];
+                    data_countries[country].visible_decisions = [];
+                    data_countries[country].available_decisions = [];
+                }
+                for (key in data_tiles) {
+                    if (!data_tiles[key].name) {
+                        data_tiles[key].name = "tile_" + key;
+                    }
+                    $("#tile-"+key).attr('onclick', 'on_tile_click("'+key+'")');
+                    $("#tile-"+key).attr('onmouseover', 'on_tile_over("'+key+'")');
+                    $("#tile-"+key).attr('onmouseout', 'clear_tooltip()');
+                    $("#tile-"+key).attr('data-tile', key);
+                }
+                for (decision in data_decisions) {
+                    for (country in data_countries) {
+                        if (run_trigger(data_decisions[decision].allowed, [country])[0]) {
+                            data_countries[country].allowed_decisions.push(decision);
+                        }
+                    }
+                }
+                for (key in data_countries) {
+                    data_variables[key] = {};
+                }
+                for (key in data_people) {
+                    data_variables[key] = {};
+                }
+                for (key in data_tiles) {
+                    data_variables[key] = {};
+                }
+            });
+            load_player("GBR");
+            do_turn();
+            diplomacy_tab_generate();
+            load_map_style();
+            $("svg").svgPanZoom(
+                {
+                    maxZoom: 100, 
+                    animationTime: 0,
+                    zoomFactor: 0.05,
+                    initialViewBox: "250 0 500 500",
+                    limit: { x:-0, y:-0, x2:1000, y2:1000 }
+                }
+            );
+        }
     }
     load_data();
 });
@@ -490,7 +594,7 @@ function get_position_title(position, scope, gender) {
 }
 function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
     var tt = "";
-    var emb = '&nbsp;'.repeat(embed*6);
+    var emb;
     for (effect of script) {
         var scope = (effect.scope === undefined) ? scopes[scopes.length-1] : get_token(effect.scope, scopes); 
         var target = (effect.target === undefined) ? scopes[scopes.length-1] : get_token(effect.target, scopes);
@@ -733,15 +837,9 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
     return tt;
 }
 function run_trigger(trigger_block, scopes, embed=0, first=true) {
-    // trigger_block is
-    // {
-    //  "type": "and"/"or"
-    //  "triggers": []
-    // }
-    //
-    // return (evaluation, tooltip)
     var evaluation = false;
     var tt = "";
+    var emb;
     if (trigger_block.not === undefined) {
         trigger_block.not = false;
     }
@@ -768,14 +866,18 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
     for (trigger of trigger_block.triggers) {
         var local = true;
         var tt2 = "";
+        var scope = (trigger.scope === undefined) ? scopes[scopes.length-1] : get_token(trigger.scope, scopes); 
+        var target = (trigger.target === undefined) ? scopes[scopes.length-1] : get_token(trigger.target, scopes);
+        var short_tt = trigger.short_tt ?? true;
+        emb = '&nbsp;'.repeat(embed*6);
         switch (trigger.type) {
             case 'always':
                 tt2 = `Always true<br>`;
                 local = true;
                 break;
             case "owns_tile":
-                tt2 = `<span style="color:yellow">${return_flag(data_countries[ get_token(scopes[scopes.length-1], scopes) ].flag, 25, 17)} ${get_localisation(data_countries[ get_token(scopes[scopes.length-1], scopes) ].name)}</span> owns <span style="color:yellow">${get_localisation(data_tiles[trigger.tile].name)}</span><br>`;
-                if (data_tiles[trigger.tile].owner == get_token(scopes[scopes.length-1], scopes)) {
+                tt2 = get_localisation(short_tt ? `Owns <span style="color:yellow">$$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> owns <span style="color:yellow">$$${target}.name$$</span><br>`, scopes);
+                if (data_tiles[target].owner == scope) {
                     local = true;
                 }
                 else {
@@ -783,8 +885,8 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 }
                 break;
             case "owner":
-                tt2 = `<span style="color:yellow">${return_flag(data_countries[ get_token(trigger.owner, scopes) ].flag, 25, 17)} ${get_localisation(data_countries[ get_token(trigger.owner, scopes) ].name)}</span> owns <span style="color:yellow">${get_localisation(data_tiles[get_token(scopes[scopes.length-1], scopes)].name)}</span><br>`;
-                if (data_tiles[get_token(scopes[scopes.length-1])].owner == get_token(trigger.owner, scopes)) {
+                tt2 = get_localisation(short_tt ? `Owned by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.name$$</span> is owned by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
+                if (data_tiles[scope].owner == target) {
                     local = true;
                 }
                 else {
@@ -792,8 +894,8 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 }
                 break;
             case "tag":
-                tt2 = `Is <span style="color:yellow">${return_flag(data_countries[ trigger.tag ].flag, 25, 17)} ${get_localisation(data_countries[ trigger.tag ].name)}</span><br>`;
-                if (trigger.tag == get_token(scopes[scopes.length-1], scopes)) {
+                tt2 = get_localisation(`Is <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
+                if (target == scope) {
                     local = true;
                 }
                 else {
@@ -805,10 +907,136 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 var evald = run_trigger(trigger, scopes, embed+1, false);
                 local = evald[0];
                 tt2 = evald[1];
+                break;
+            case 'scope':
+                var new_trigger = trigger.triggers;
+                var limit = trigger.limit;
+                switch(trigger.tag) {
+                    case "any_tile":
+                    case "any_country":
+                    case "any_person":
+                    case "all_tile":
+                    case "all_country":
+                    case "all_person":
+                        var every = [];
+                        var data;
+                        var data_type;
+                        var scope_type = trigger.tag.substring(0, 3);
+                        switch (trigger.tag) {
+                            case "any_tile":
+                            case "all_tile":
+                                data = data_tiles;
+                                data_type = "tile";
+                                break;
+                            case "any_country":
+                            case "all_country":
+                                data = data_countries;
+                                data_type = "country";
+                                break;
+                            case "any_person":
+                            case "all_person":
+                                data = data_people;
+                                data_type = "person";
+                                break;
+                        }
+                        for (entry in data) {
+                            if (run_trigger(limit, scopes.concat(entry))[0]) {
+                                every.push(entry);
+                            }
+                        }
+                        if (tooltip && !trigger.no_tooltip) {
+                            var data_type_c = data_type.charAt(0).toUpperCase() + data_type.slice(1);
+                            var data_type_c2;
+                            if (scope_type == "all") {
+                                local = true;
+                                data_type_c2 = "and";
+                            }
+                            else if (scope_type == "any") {
+                                data_type_c2 = "or";
+                                local = false;
+                            }
+                            var new_emb = '&nbsp;'.repeat((embed+1)*6);
+                            if (trigger.label === undefined) {
+                                switch (every.length) {
+                                    case 0:
+                                        break;
+                                    case 1:
+                                        if (data_type == "country") { 
+                                            tt2 = get_localisation(`<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                        }
+                                        else {
+                                            tt2 = get_localisation(`<span style="color:yellow">$$${every[0]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                        }
+                                        break;
+                                    case 2:
+                                        if (data_type == "country") {
+                                            tt2 = get_localisation(`<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$ ${data_type_c2} $$${every[1]}.flag$$ $$${every[1]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                        }
+                                        else {
+                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.name$$ ${data_type_c2} $$${every[1]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                        }
+                                        break;
+                                    case 3:
+                                        if (data_type == "country") {
+                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$ ${data_type_c2} $$${every[2]}.flag$$ $$${every[2]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                        }
+                                        else {
+                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.name$$, $$${every[1]}.name$$ ${data_type_c2} $$${every[2]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                        }
+                                        break;
+                                    default:
+                                        if (data_type == "country") {
+                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$, $$${every[2]}.flag$$ $$${every[2]}.name$$ ${data_type_c2} ${every.length-3} others:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                        }
+                                        else {
+                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.name$$, $$${every[1]}.name$$, $$${every[2]}.name$$ ${data_type_c2} ${every.length-3} others:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                        }
+                                        break;
+
+                                }
+                            }
+                            else {
+                                tt2 = get_localisation(`<span style="color:yellow">${get_localisation(effect.label, scopes)}:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`, scopes)
+                            }
+                        }
+                        for (entry of every) {
+                            var temp = run_trigger(new_trigger, scopes.concat(entry), embed+1, true)[0];
+                            if (scope_type == "all") {
+                                if (local && !temp) {
+                                    local = false;
+                                }
+                            }
+                            else if (scope_type == "any") {
+                                if (temp) {
+                                    local = true;
+                                }
+                            }
+                        }
+                        break;
+                    
+                    default: // Individual tag
+                        var tag = get_token(trigger.tag, scopes);
+                        if (tooltip && !trigger.no_tooltip) {
+                            if (trigger.label === undefined) {
+                                if (get_tag_type(tag) == "country") {
+                                    tt2 = get_localisation(`<span style="color:yellow">$$${tag}.flag$$ $$${tag}.name$$:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
+                                }
+                                else {
+                                    tt2 = get_localisation(`<span style="color:yellow">$$${tag}.name$$:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
+                                }
+                            }
+                            else {
+                                tt2 = get_localisation(`<span style="color:yellow">${get_localisation(trigger.label)}:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
+                            }
+                        }
+                        local = run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[0];
+                        break;        
+                }
+                break;
 
         }
         if (local) {
-            tt += `${'&nbsp;'.repeat(embed*6)}${text_icons["true"]} ${tt2}`;
+            tt += `${emb}${text_icons["true"]} ${tt2}`;
             switch (trigger_block.type) {
                 case "or":
                     evaluation = true;
@@ -816,7 +1044,7 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
             }
         }
         else {
-            tt += `${'&nbsp;'.repeat(embed*6)}${text_icons["false"]} ${tt2}`;
+            tt += `${emb}${text_icons["false"]} ${tt2}`;
             switch (trigger_block.type) {
                 case "and":
                     evaluation = false;

@@ -66,7 +66,38 @@
         },
         "available": {
             "type": "and",
-            "triggers": []
+            "triggers": [
+                {
+                    "type": "tag",
+                    "target": "GBR"
+                },
+                {
+                    "type": "scope",
+                    "tag": "EUR",
+                    "limit": {
+                        "type": "or",
+                        "triggers": [
+                            {
+                                "type": "tag",
+                                "tag": "EUR"
+                            },
+                            {
+                                "type": "tag",
+                                "tag": "GBR"
+                            }
+                        ]
+                    },
+                    "triggers": {
+                        "type": "and",
+                        "triggers": [
+                            {
+                                "type": "owns_tile",
+                                "target": "northern-ireland"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "effects": [
             {
@@ -81,7 +112,7 @@
                     "type": "and",
                     "triggers": [{
                         "type": "owner",
-                        "owner": "EUR"
+                        "target": "EUR"
                     }]
                 },
                 "effects": [
@@ -106,6 +137,18 @@
                 "name": "$$GBR.country_name$$-$$GBR.tag_var,Union.country_name$$",
                 "no_tooltip": true,
                 "instance": true
+            },
+            {
+                "type": "scope",
+                "tag": "every_country",
+                "limit": {
+                    "type": "and",
+                    "triggers": [{
+                        "type": "tag",
+                        "target": "EUR"
+                    }]
+                },
+                "effects": []
             }
         ]
     }
