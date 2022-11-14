@@ -439,6 +439,10 @@ $(window).on('load', function() {
                 });
             });
         }); */
+            dir = dir.replace('\\', '/')
+            if (dir.charAt(dir.length- 1) != '/' && dir != '') {
+                dir += '/'
+            }
             $.getJSON(dir+"mod.json", function (mod_json) {
                 if (mod_json.countries !== undefined) {
                     for (new_file of mod_json.countries) {
@@ -488,7 +492,9 @@ $(window).on('load', function() {
                         });
                     }
                 }
-                data_player = mod_json.default_tag;
+                if (mod_json.default_tag !== undefined) {
+                    data_player = mod_json.default_tag;
+                }
                 if (mod_json.mapsvg !== undefined) {
                     maps.push(dir+mod_json.mapsvg);
                 }
@@ -539,15 +545,23 @@ $(window).on('load', function() {
         do_turn();
         diplomacy_tab_generate();
         load_map_style();
+        $("svg").removeAttr("width");
+        $("svg").removeAttr("height");
+        $("svg").css("height", "100vh");
+        $("svg").css("width", "100%");
+        $("svg").css("display", "block");
+        $("svg").css("margin", "auto");
+        $("svg").css("background-color", "green");
         $("svg").svgPanZoom(
             {
                 maxZoom: 100, 
                 animationTime: 0,
                 zoomFactor: 0.05,
-                initialViewBox: "250 0 500 500",
-                limit: { x:-0, y:-0, x2:1000, y2:1000 }
+                controlIconsEnabled: true
+                //initialViewBox: "0 0 1000 1000",
+                //limit: { x:0, y:0, x2:1000, y2:1000 }
             }
-        );
+        )
     }
     load_data();
 });
