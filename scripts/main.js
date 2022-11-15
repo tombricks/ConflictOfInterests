@@ -666,10 +666,10 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
         var short_tt = effect.short_tt ?? true;
         emb = '&nbsp;'.repeat(embed*6);
         switch (effect.type) {
-            case 'annex_tile':
+            case 'set_state_control':
                 if ((target in data_tiles) && (scope in data_countries)) {
                     if (tooltip && !effect.no_tooltip) {
-                        tt += get_localisation(short_tt ? `${emb}Annexes <span style="color:yellow">$$${target}.name$$</span><br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> annexes <span style="color:yellow">$$${target}.name$$</span><br>`, scopes)
+                        tt += get_localisation(short_tt ? `${emb}Becomes controller of <span style="color:yellow">$$${target}.name$$</span><br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> becomes controller of <span style="color:yellow">$$${target}.name$$</span><br>`, scopes)
                     }
                     if (execute && !effect.no_execute) {
                         change_tile_controller(target, scope, scopes);
@@ -677,10 +677,10 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 }
                 else {
                     if (!(target in data_tiles)) {
-                        logic_error_log(`Logic error: annex_tile: "${target}" not a valid tile`);
+                        logic_error_log(`Logic error: set_state_control: "${target}" not a valid tile`);
                     }
                     if (!(scope in data_countries)) {
-                        logic_error_log(`Logic error: annex_tile: "${scope}" not a valid country`);
+                        logic_error_log(`Logic error: set_state_control: "${scope}" not a valid country`);
                     }
                 }
                 break;
