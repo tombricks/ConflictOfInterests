@@ -1,25 +1,15 @@
 {
-    "GBR_test": {
-        "title": "GBR_test.title",
-        "desc": "GBR_test.desc",
+    "GBR_Ireland": {
+        "title": "GBR_Ireland.title",
+        "desc": "GBR_Ireland.desc",
         "options": [
             {
-                "name": "guh",
+                "name": "GBR_Ireland.1",
                 "ai": [ { "type": "add", "value": 50 } ],
                 "effects": [
                     {
-                        "type": "annex_tile",
-                        "target": "ireland"
-                    }
-                ]
-            },
-            {
-                "name": "guh2",
-                "ai": [ { "type": "add", "value": 13 } ],
-                "effects": [
-                    {
-                        "type": "annex_tile",
-                        "target": "germany"
+                        "type": "set_country_long_name",
+                        "name": "GBR_IRE_long"
                     }
                 ]
             }

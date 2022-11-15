@@ -6,6 +6,7 @@ var data_player = ""
 var data_events = {}
 var data_decisions = {}
 var data_variables = {}
+var data_on_actions = {}
 var localisation = {}
 var fired_events = {}
 var turn = 0;
@@ -30,6 +31,9 @@ function return_flag(flag, width, height) {
 function on_tile_click(tile) {
     if (window.event.ctrlKey) {
         load_player(data_tiles[tile].owner);
+    }
+    else if (window.event.altKey) {
+        change_tile_owner(tile, data_player);
     }
 }
 function on_tile_over(tile) {
@@ -488,6 +492,27 @@ $(window).on('load', function() {
                         });
                     }
                 }
+                if (mod_json.on_actions !== undefined) {
+                    for (new_file of mod_json.on_actions) {
+                        $.getJSON(dir+new_file, function (new_json) {
+                            for (action in new_json) {
+                                switch (action) {
+                                    case "on_tile_owner_change":
+                                        for (tile in new_json[action]) {
+                                            if (tile in data_tiles) {
+                                                data_tiles[tile].on_tile_owner_change = new_json[action][tile];
+                                            }
+                                            else if (tile == "default") {
+                                                data_on_actions["on_tile_owner_change_default"] = new_json[action][tile];
+                                            }
+                                        }
+                                        break;
+                                }
+                            }
+                            console.log(`Loaded: ${dir}${new_file}`);
+                        });
+                    }
+                }
                 if (mod_json.localisation !== undefined) {
                     for (new_file of mod_json.localisation) {
                         $.getJSON(dir+new_file, function (new_json) {
@@ -640,28 +665,39 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
         emb = '&nbsp;'.repeat(embed*6);
         switch (effect.type) {
             case 'annex_tile':
-                if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(short_tt ? `${emb}Annexes <span style="color:yellow">$$${target}.name$$</span><br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> annexes <span style="color:yellow">$$${target}.name$$</span><br>`, scopes)
+                if ((target in data_tiles) && (scope in data_countries)) {
+                    if (tooltip && !effect.no_tooltip) {
+                        tt += get_localisation(short_tt ? `${emb}Annexes <span style="color:yellow">$$${target}.name$$</span><br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> annexes <span style="color:yellow">$$${target}.name$$</span><br>`, scopes)
+                    }
+                    if (execute && !effect.no_execute) {
+                        change_tile_owner(target, scope, scopes);
+                    }
                 }
-                if (execute && !effect.no_execute) {
-                    change_tile_owner(target, scope, scopes);
+                else {
+                    if (!(target in data_tiles)) {
+                        logic_error_log(`Logic error: annex_tile: "${target}" not a valid tile`);
+                    }
+                    if (!(scope in data_countries)) {
+                        logic_error_log(`Logic error: annex_tile: "${scope}" not a valid country`);
+                    }
                 }
                 break;
             case 'fire_event':
-                var temp_scopes = scopes;
                 var event = get_token(effect.event, scopes);
-                var turns = get_token(effect.turns, scopes);
-                if (scope != scopes[scopes.length-1]) {
-                    temp_scopes.push(scope);
-                }
-                if (tooltip && !effect.no_tooltip) {
-                    var temp = ""
-                    if (turns !== undefined && turns != 0) {
-                        temp = ` in ${turns} turns`;
+                if ((event in data_events) && (scope in data_countries)) {
+                    var temp_scopes = scopes;
+                    var turns = get_token(effect.turns, scopes);
+                    if (scope != scopes[scopes.length-1]) {
+                        temp_scopes.push(scope);
                     }
-                    tt += get_localisation(short_tt ? `${emb}Gets event <span style="color:yellow">${get_localisation(data_events[event].title)}</span>${temp}<br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> gets event <span style="color:yellow">${get_localisation(data_events[event].title)}</span>${temp}<br>`, temp_scopes);
-                }
-                if (execute && !effect.no_execute) {
+                    if (tooltip && !effect.no_tooltip) {
+                        var temp = ""
+                        if (turns !== undefined && turns != 0) {
+                            temp = ` in ${turns} turns`;
+                        }
+                        tt += get_localisation(short_tt ? `${emb}Gets event <span style="color:yellow">${get_localisation(data_events[event].title)}</span>${temp}<br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> gets event <span style="color:yellow">${get_localisation(data_events[event].title)}</span>${temp}<br>`, temp_scopes);
+                    }
+                    if (execute && !effect.no_execute) {
                     if (turns === undefined || turns == 0) {
                         fire_event(event, temp_scopes);
                     }
@@ -670,6 +706,15 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                             schedule[turn+turns] = {"events": []}
                         }
                         schedule[turn+turns].events.push({"id": event, "scopes": temp_scopes});
+                    }
+                    }
+                }
+                else {
+                    if (!(event in data_events)) {
+                        logic_error_log(`Logic error: fire_event: "${event}" not a valid event`);
+                    }
+                    if (!(scope in data_countries)) {
+                        logic_error_log(`Logic error: fire_event: "${scope}" not a valid country`);
                     }
                 }
                 break;
@@ -790,7 +835,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 break;
             case "set_country_long_name":
                 if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(`${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.long_name$$</span> becomes the <span style="color:yellow">${effect.name}</span><br>`, scopes);
+                    tt += get_localisation(`${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.long_name$$</span> becomes the <span style="color:yellow">${get_localisation(get_token(effect.name, scopes), scopes)}</span><br>`, scopes);
                 }
                 if (execute && !effect.no_execute) {
                     if (effect.instance) {
@@ -804,7 +849,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 break;
             case "set_country_name":
                 if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(`${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> becomes the <span style="color:yellow">${get_token(effect.name, scopes)}</span><br>`, scopes);
+                    tt += get_localisation(`${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> becomes the <span style="color:yellow">${get_localisation(get_token(effect.name, scopes), scopes)}</span><br>`, scopes);
                 }
                 if (execute && !effect.no_execute) {
                     if (effect.instance) {
@@ -879,6 +924,9 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 if (execute && !effect.no_execute) {
                     data_people[person].name = name;
                 }
+                break;
+            default:
+                logic_error_log(`Logic error: Effect "${effect.type}" does not exist`);
                 break;
         }
     }
@@ -1157,7 +1205,7 @@ function fire_event(event, scopes) {
         });
         var eventhtml = `<div id="event-${event_id}" class="event shadow">
             <h2>${get_localisation( data_events[ event ].title )}</h2>
-            <p>${get_localisation( data_events[ event ].desc )}</p>
+            ${get_localisation( data_events[ event ].desc )}<br>
             ${opts}
         </div>`
         $("#events").append(eventhtml);
@@ -1216,7 +1264,12 @@ function fire_decision(decision, tag) {
     evaluate_decisions();
 }
 function change_tile_owner(tile, owner) {
+    var old_owner = data_tiles[tile].owner;
     data_tiles[tile].owner = owner;
+    if (data_tiles[tile].on_tile_owner_change !== undefined) {
+        run_effect(data_tiles[tile].on_tile_owner_change, [old_owner, owner, tile], false, true);
+    }
+    run_effect(data_on_actions["on_tile_owner_change_default"], [old_owner, owner, tile], false, true);
     tile_style(tile);
 }
 function has_position(position, tag) {

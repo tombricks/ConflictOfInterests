@@ -1,0 +1,29 @@
+{
+    "comment": [ "prevowner", "owner", "tile" ],
+    "on_tile_owner_change": {
+        "ireland": [
+            {
+                "type": "scope",
+                "tag": "prev1",
+                "effects": [
+                    {
+                        "type": "if",
+                        "limit": {
+                            "triggers": [{
+                                "type": "tag",
+                                "tag": "GBR"
+                            }]
+                        },
+                        "effects": [
+                            {
+                                "type": "fire_event",
+                                "event": "GBR_Ireland"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "default": []
+    }
+}

@@ -3,18 +3,6 @@
     "gender_f": "Female",
     "gender_nb": "Non-binary",
 
-    "tile_great-britain": "Great Britain",
-    "tile_northern-ireland": "Northern Ireland",
-    "tile_ireland": "Ireland",
-    "tile_france": "France",
-    "tile_belgium": "Belgium",
-    "tile_luxembourg": "Luxembourg",
-    "tile_netherlands": "Netherlands",
-    "tile_germany": "Germany",
-    "tile_austria": "Austria",
-    "tile_switzerland": "Switzerland",
-    "tile_italy": "Italy",
-
     "title_prime_minister": "Prime Minister",
     "title_king": "King",
     "title_queen": "Queen",
@@ -31,5 +19,9 @@
     "GBR_Dominic_Raab": "Dominic Raab",
     "GBR_Jeremy_Hunt": "Jeremy Hunt",
     "GBR_Jessica_Hunt": "Jessica Hunt",
-    "GBR_Keir_Starmer": "Keir Starmer"
+    "GBR_Keir_Starmer": "Keir Starmer",
+
+    "GBR_Ireland.title": "Reunification of <span style=\"color:red\">Great Britain</span> and <span style=\"color:green\">Ireland</span>",
+    "GBR_Ireland.desc": "After many decades separate, the United Kingdom has finally reconquered the island of Ireland. Northern Ireland has been expanded to cover the whole 32-county nation and the official name of the $$GBR.flag$$ <span style=\"color:yellow\">United Kingdom</span> has been changed to reflect this.",
+    "GBR_Ireland.1": "Rule, Britannia!"
 }

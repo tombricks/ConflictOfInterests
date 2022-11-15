@@ -16,6 +16,9 @@
     "events": [
         "content/events.json"
     ],
+    "on_actions": [
+        "content/on_actions.json"
+    ],
     "localisation": [
         "localisation/tiles.json",
         "localisation/countries.json",
