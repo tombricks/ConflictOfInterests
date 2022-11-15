@@ -191,5 +191,15 @@
     "POL_DEF": "Poland",
     "POL_ADJ": "Polish",
     "POL_long": "Republic of Poland",
-    "POL_long_DEF": "the Republic of Poland"
+    "POL_long_DEF": "the Republic of Poland",
+    "DNR": "Donetsk",
+    "DNR_DEF": "Donetsk",
+    "DNR_ADJ": "Donetsk",
+    "DNR_long": "Donetsk People's Republic",
+    "DNR_long_DEF": "the Donetsk People's Republic",
+    "LNR": "Luhansk",
+    "LNR_DEF": "Luhansk",
+    "LNR_ADJ": "Luhansk",
+    "LNR_long": "Luhansk People's Republic",
+    "LNR_long_DEF": "the Luhansk People's Republic"
 }

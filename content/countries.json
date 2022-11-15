@@ -227,5 +227,15 @@
     "BLR": {
         "color": "#8e9b52",
         "flag": "assets/flags/BLR.png"
+    },
+
+    "DNR": {
+        "color": "#492140",
+        "flag": "assets/flags/DNR.png"
+    },
+
+    "LNR": {
+        "color": "#676497",
+        "flag": "assets/flags/LNR.png"
     }
 }
