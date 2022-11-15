@@ -1,88 +1,877 @@
 {
 	"tiles": {
-		"serbia": { "controller": "SER" },
-		"kosovo": { "controller": "KOS" },
-		"montenegro": { "controller": "MON" },
-		"slovenia": { "controller": "SLO" },
-		"croatia": { "controller": "CRO" },
-		"macedonia": { "controller": "MAC" },
-		"bosnia": { "controller": "BIH" },
-		"albania": { "controller": "ALB" },
-		"lithuania": { "controller": "LIT" },
-		"estonia": { "controller": "EST" },
-		"latvia": { "controller": "LAT" },
-		"crimea": { "controller": "RUS" },
-		"belarus": { "controller": "BLR" },
-		"moldova": { "controller": "MOL" },
-		"transnistria": { "controller": "TRN" },
-		"italy": { "controller": "ITA" },
-		"slovakia": { "controller": "SLO" },
-		"czechia": { "controller": "CZE" },
-		"hungary": { "controller": "HUN" },
-		"romania": { "controller": "ROM" },
-		"bulgaria": { "controller": "BUL" },
-		"greece": { "controller": "GRE" },
-		"iceland": { "controller": "ICE" },
-		"spain": { "controller": "SPA" },
-		"portugal": { "controller": "POR" },
-		"poland": { "controller": "POL" },
-		"denmark": { "controller": "DEN" },
-		"greenland": { "controller": "DEN" },
-		"germany": { "controller": "GER" },
-		"switzerland": { "controller": "SWI" },
-		"austria": { "controller": "AUS" },
-		"france": { "controller": "FRA" },
-		"kaliningrad": { "controller": "RUS" },
-		"netherlands": { "controller": "NET" },
-		"belgium": { "controller": "BEL" },
-		"luxembourg": { "controller": "LUX" },
-		"sweden": { "controller": "SWE" },
-		"norway": { "controller": "NOR" },
-		"svalbard": { "controller": "NOR" },
-		"finland": { "controller": "FIN" },
-		"russia": { "controller": "RUS" },
-		"ivano-frankivsk": { "controller": "UKR" },
-		"khmelnytskyi": { "controller": "UKR" },
-		"ternopil": { "controller": "UKR" },
-		"rivne": { "controller": "UKR" },
-		"volyn": { "controller": "UKR" },
-		"lviv": { "controller": "UKR" },
-		"zakarpattia": { "controller": "UKR" },
-		"chernivtsi": { "controller": "UKR" },
-		"zhytomyr": { "controller": "UKR" },
-		"vinnytsia": { "controller": "UKR" },
-		"kiev": { "controller": "UKR" },
-		"cherkasy": { "controller": "UKR" },
-		"kirovohrad": { "controller": "UKR" },
-		"chernihiv": { "controller": "UKR" },
-		"odessa": { "controller": "UKR" },
-		"mykolaiv": { "controller": "UKR" },
-		"kherson": { "controller": "UKR" },
-		"zaporizhia": { "controller": "UKR" },
-		"poltava": { "controller": "UKR" },
-		"sumy": { "controller": "UKR" },
-		"dnipropetrovsk": { "controller": "UKR" },
-		"kharkiv": { "controller": "UKR" },
-		"luhansk": { "controller": "UKR" },
-		"donetsk": { "controller": "UKR" },
-		"luhansk-2022": { "controller": "LNR" },
-		"donetsk-2022": { "controller": "DNR" },
-		"northern-ireland": { "controller": "GBR" },
-		"cornwall": { "controller": "GBR" },
-		"london": { "controller": "GBR" },
-		"se-england": { "controller": "GBR" },
-		"east-england": { "controller": "GBR" },
-		"east-midlands": { "controller": "GBR" },
-		"sw-england": { "controller": "GBR" },
-		"west-midlands": { "controller": "GBR" },
-		"nw-england": { "controller": "GBR" },
-		"wales": { "controller": "GBR" },
-		"yorkshire": { "controller": "GBR" },
-		"ne-england": { "controller": "GBR" },
-		"scotland": { "controller": "GBR" },
-		"ulster": { "controller": "IRE" },
-		"leinster": { "controller": "IRE" },
-		"connaught": { "controller": "IRE" },
-		"munster": { "controller": "IRE" }
+		"serbia": {
+			"controller": "SER",
+			"claims": [ "SER" ]
+		},
+		"kosovo": {
+			"controller": "KOS",
+			"claims": [ "KOS", "SER" ]
+		},
+		"montenegro": {
+			"controller": "MON",
+			"claims": [ "MON" ]
+		},
+		"slovenia": {
+			"controller": "SLO",
+			"claims": [ "SLO" ]
+		},
+		"croatia": {
+			"controller": "CRO",
+			"claims": [ "CRO" ]
+		},
+		"macedonia": {
+			"controller": "MAC",
+			"claims": [ "MAC" ]
+		},
+		"bosnia": {
+			"controller": "BIH",
+			"claims": [ "BIH" ]
+		},
+		"albania": {
+			"controller": "ALB",
+			"claims": [ "ALB" ]
+		},
+		"lithuania": {
+			"controller": "LIT",
+			"claims": [ "LIT" ]
+		},
+		"estonia": {
+			"controller": "EST",
+			"claims": [ "EST" ]
+		},
+		"latvia": {
+			"controller": "LAT",
+			"claims": [ "LAT" ]
+		},
+		"crimea": {
+			"controller": "RUS",
+			"claims": [ "RUS", "UKR" ]
+		},
+		"belarus": {
+			"controller": "BLR",
+			"claims": [ "BLR" ]
+		},
+		"moldova": {
+			"controller": "MOL",
+			"claims": [ "MOL" ]
+		},
+		"transnistria": {
+			"controller": "TRN",
+			"claims": [ "TRN", "MOL" ]
+		},
+		"italy": {
+			"controller": "ITA",
+			"claims": [ "ITA" ]
+		},
+		"slovakia": {
+			"controller": "SLO",
+			"claims": [ "SLO" ]
+		},
+		"czechia": {
+			"controller": "CZE",
+			"claims": [ "CZE" ]
+		},
+		"hungary": {
+			"controller": "HUN",
+			"claims": [ "HUN" ]
+		},
+		"romania": {
+			"controller": "ROM",
+			"claims": [ "ROM" ]
+		},
+		"bulgaria": {
+			"controller": "BUL",
+			"claims": [ "BUL" ]
+		},
+		"greece": {
+			"controller": "GRE",
+			"claims": [ "GRE" ]
+		},
+		"iceland": {
+			"controller": "ICE",
+			"claims": [ "ICE" ]
+		},
+		"spain": {
+			"controller": "SPA",
+			"claims": [ "SPA" ]
+		},
+		"portugal": {
+			"controller": "POR",
+			"claims": [ "POR" ]
+		},
+		"poland": {
+			"controller": "POL",
+			"claims": [ "POL" ]
+		},
+		"denmark": {
+			"controller": "DEN",
+			"claims": [ "DEN" ]
+		},
+		"greenland": {
+			"controller": "DEN",
+			"claims": [ "DEN" ]
+		},
+		"germany": {
+			"controller": "GER",
+			"claims": [ "GER" ]
+		},
+		"switzerland": {
+			"controller": "SWI",
+			"claims": [ "SWI" ]
+		},
+		"austria": {
+			"controller": "AUS",
+			"claims": [ "AUS" ]
+		},
+		"france": {
+			"controller": "FRA",
+			"claims": [ "FRA" ]
+		},
+		"kaliningrad": {
+			"controller": "RUS",
+			"claims": [ "RUS" ]
+		},
+		"netherlands": {
+			"controller": "NET",
+			"claims": [ "NET" ]
+		},
+		"belgium": {
+			"controller": "BEL",
+			"claims": [ "BEL" ]
+		},
+		"luxembourg": {
+			"controller": "LUX",
+			"claims": [ "LUX" ]
+		},
+		"sweden": {
+			"controller": "SWE",
+			"claims": [ "SWE" ]
+		},
+		"norway": {
+			"controller": "NOR",
+			"claims": [ "NOR" ]
+		},
+		"svalbard": {
+			"controller": "NOR",
+			"claims": [ "NOR" ]
+		},
+		"finland": {
+			"controller": "FIN",
+			"claims": [ "FIN" ]
+		},
+		"russia": {
+			"controller": "RUS",
+			"claims": [ "RUS" ]
+		},
+		"ivano-frankivsk": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"khmelnytskyi": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"ternopil": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"rivne": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"volyn": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"lviv": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"zakarpattia": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"chernivtsi": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"zhytomyr": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"vinnytsia": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"kiev": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"cherkasy": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"kirovohrad": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"chernihiv": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"odessa": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"mykolaiv": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"kherson": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"zaporizhia": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"poltava": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"sumy": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"dnipropetrovsk": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"kharkiv": {
+			"controller": "UKR",
+			"claims": [ "UKR" ]
+		},
+		"luhansk": {
+			"controller": "UKR",
+			"claims": [ "UKR", "LNR" ]
+		},
+		"donetsk": {
+			"controller": "UKR",
+			"claims": [ "UKR", "DNR" ]
+		},
+		"luhansk-2022": {
+			"controller": "LNR",
+			"claims": [ "LNR", "UKR" ]
+		},
+		"donetsk-2022": {
+			"controller": "DNR",
+			"claims": [ "DNR", "UKR" ]
+		},
+		"northern-ireland": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"cornwall": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"london": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"se-england": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"east-england": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"east-midlands": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"sw-england": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"west-midlands": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"nw-england": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"wales": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"yorkshire": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"ne-england": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"scotland": {
+			"controller": "GBR",
+			"claims": [ "GBR" ]
+		},
+		"ulster": {
+			"controller": "IRE",
+			"claims": [ "IRE" ]
+		},
+		"leinster": {
+			"controller": "IRE",
+			"claims": [ "IRE" ]
+		},
+		"connaught": {
+			"controller": "IRE",
+			"claims": [ "IRE" ]
+		},
+		"munster": {
+			"controller": "IRE",
+			"claims": [ "IRE" ]
+		}
+	},
+	"connections": {
+		"serbia": [
+		  "romania",
+		  "hungary",
+		  "kosovo",
+		  "bulgaria",
+		  "macedonia",
+		  "montenegro",
+		  "bosnia",
+		  "croatia"
+		],
+		"kosovo": [
+		  "serbia",
+		  "macedonia",
+		  "montenegro",
+		  "albania"
+		],
+		"montenegro": [
+		  "serbia",
+		  "kosovo",
+		  "albania",
+		  "bosnia"
+		],
+		"slovenia": [
+		  "hungary",
+		  "croatia",
+		  "austria",
+		  "italy"
+		],
+		"croatia": [
+		  "hungary",
+		  "serbia",
+		  "bosnia",
+		  "slovenia"
+		],
+		"macedonia": [
+		  "serbia",
+		  "bulgaria",
+		  "kosovo",
+		  "albania",
+		  "greece"
+		],
+		"bosnia": [
+		  "serbia",
+		  "montenegro",
+		  "croatia"
+		],
+		"albania": [
+		  "macedonia",
+		  "kosovo",
+		  "greece",
+		  "montenegro"
+		],
+		"lithuania": [
+		  "poland",
+		  "kaliningrad",
+		  "latvia",
+		  "belarus"
+		],
+		"estonia": [
+		  "latvia",
+		  "russia"
+		],
+		"latvia": [
+		  "lithuania",
+		  "estonia",
+		  "belarus",
+		  "russia"
+		],
+		"crimea": [
+		  "russia",
+		  "kherson"
+		],
+		"belarus": [
+		  "poland",
+		  "lithuania",
+		  "latvia",
+		  "russia",
+		  "volyn",
+		  "rivne",
+		  "zhytomyr",
+		  "kiev",
+		  "chernihiv"
+		],
+		"moldova": [
+		  "odessa",
+		  "chernivtsi",
+		  "transnistria",
+		  "vinnytsia",
+		  "romania"
+		],
+		"transnistria": [
+		  "odessa",
+		  "moldova",
+		  "vinnytsia"
+		],
+		"italy": [
+		  "slovenia",
+		  "austria",
+		  "france",
+		  "italy",
+		  "italy",
+		  "switzerland"
+		],
+		"slovakia": [
+		  "czechia",
+		  "hungary",
+		  "austria",
+		  "poland",
+		  "zakarpattia"
+		],
+		"czechia": [
+		  "germany",
+		  "poland",
+		  "slovakia",
+		  "hungary",
+		  "austria"
+		],
+		"hungary": [
+		  "czechia",
+		  "slovakia",
+		  "zakarpattia",
+		  "austria",
+		  "croatia",
+		  "slovenia",
+		  "serbia",
+		  "romania"
+		],
+		"romania": [
+		  "zakarpattia",
+		  "odessa",
+		  "chernivtsi",
+		  "moldova",
+		  "ivano-frankivsk",
+		  "serbia",
+		  "bulgaria",
+		  "hungary"
+		],
+		"bulgaria": [
+		  "romania",
+		  "serbia",
+		  "greece",
+		  "macedonia"
+		],
+		"greece": [
+		  "bulgaria",
+		  "macedonia",
+		  "albania"
+		],
+		"iceland": [],
+		"spain": [
+		  "france",
+		  "portugal"
+		],
+		"portugal": [
+		  "spain"
+		],
+		"poland": [
+		  "germany",
+		  "czechia",
+		  "slovakia",
+		  "zakarpattia",
+		  "belarus",
+		  "lviv",
+		  "lithuania",
+		  "kaliningrad",
+		  "volyn"
+		],
+		"denmark": [
+		  "germany",
+		  "sweden"
+		],
+		"greenland": [],
+		"germany": [
+		  "austria",
+		  "switzerland",
+		  "france",
+		  "belgium",
+		  "luxembourg",
+		  "netherlands",
+		  "poland",
+		  "czechia",
+		  "denmark"
+		],
+		"switzerland": [
+		  "germany",
+		  "austria",
+		  "italy",
+		  "france"
+		],
+		"austria": [
+		  "germany",
+		  "czechia",
+		  "slovakia",
+		  "hungary",
+		  "slovenia",
+		  "italy",
+		  "switzerland"
+		],
+		"france": [
+		  "germany",
+		  "italy",
+		  "switzerland",
+		  "luxembourg",
+		  "belgium",
+		  "spain"
+		],
+		"kaliningrad": [
+		  "poland",
+		  "lithuania"
+		],
+		"netherlands": [
+		  "germany",
+		  "belgium"
+		],
+		"belgium": [
+		  "germany",
+		  "france",
+		  "luxembourg",
+		  "netherlands"
+		],
+		"luxembourg": [
+		  "germany",
+		  "france",
+		  "belgium"
+		],
+		"sweden": [
+		  "denmark",
+		  "norway",
+		  "finland"
+		],
+		"norway": [
+		  "sweden",
+		  "russia",
+		  "finland"
+		],
+		"svalbard": [],
+		"finland": [
+		  "sweden",
+		  "norway",
+		  "russia"
+		],
+		"russia": [
+		  "latvia",
+		  "estonia",
+		  "belarus",
+		  "crimea",
+		  "kharkiv",
+		  "luhansk",
+		  "luhansk-2022",
+		  "chernihiv",
+		  "sumy",
+		  "norway",
+		  "finland",
+		  "donetsk-2022"
+		],
+		"ivano-frankivsk": [
+		  "zakarpattia",
+		  "ternopil",
+		  "chernivtsi",
+		  "romania",
+		  "lviv"
+		],
+		"khmelnytskyi": [
+		  "zhytomyr",
+		  "rivne",
+		  "ternopil",
+		  "chernivtsi",
+		  "vinnytsia"
+		],
+		"ternopil": [
+		  "rivne",
+		  "lviv",
+		  "ivano-frankivsk",
+		  "chernivtsi",
+		  "khmelnytskyi"
+		],
+		"rivne": [
+		  "belarus",
+		  "zhytomyr",
+		  "volyn",
+		  "ternopil",
+		  "khmelnytskyi",
+		  "lviv"
+		],
+		"volyn": [
+		  "belarus",
+		  "rivne",
+		  "poland",
+		  "lviv"
+		],
+		"lviv": [
+		  "zakarpattia",
+		  "poland",
+		  "rivne",
+		  "ternopil",
+		  "volyn",
+		  "ivano-frankivsk"
+		],
+		"zakarpattia": [
+		  "slovakia",
+		  "hungary",
+		  "romania",
+		  "ivano-frankivsk",
+		  "lviv",
+		  "poland"
+		],
+		"chernivtsi": [
+		  "ternopil",
+		  "khmelnytskyi",
+		  "ivano-frankivsk",
+		  "moldova",
+		  "romania",
+		  "vinnytsia"
+		],
+		"zhytomyr": [
+		  "belarus",
+		  "kiev",
+		  "khmelnytskyi",
+		  "vinnytsia",
+		  "rivne"
+		],
+		"vinnytsia": [
+		  "kirovohrad",
+		  "odessa",
+		  "cherkasy",
+		  "kiev",
+		  "zhytomyr",
+		  "chernivtsi",
+		  "moldova",
+		  "transnistria",
+		  "khmelnytskyi"
+		],
+		"kiev": [
+		  "belarus",
+		  "cherkasy",
+		  "chernihiv",
+		  "poltava",
+		  "vinnytsia",
+		  "zhytomyr"
+		],
+		"cherkasy": [
+		  "kirovohrad",
+		  "vinnytsia",
+		  "kiev",
+		  "poltava"
+		],
+		"kirovohrad": [
+		  "dnipropetrovsk",
+		  "mykolaiv",
+		  "cherkasy",
+		  "poltava",
+		  "odessa",
+		  "vinnytsia"
+		],
+		"chernihiv": [
+		  "belarus",
+		  "kiev",
+		  "poltava",
+		  "sumy",
+		  "russia"
+		],
+		"odessa": [
+		  "mykolaiv",
+		  "kirovohrad",
+		  "transnistria",
+		  "moldova",
+		  "romania",
+		  "vinnytsia"
+		],
+		"mykolaiv": [
+		  "kherson",
+		  "dnipropetrovsk",
+		  "kirovohrad",
+		  "odessa"
+		],
+		"kherson": [
+		  "crimea",
+		  "mykolaiv",
+		  "dnipropetrovsk",
+		  "zaporizhia"
+		],
+		"zaporizhia": [
+		  "kherson",
+		  "dnipropetrovsk",
+		  "donetsk"
+		],
+		"poltava": [
+		  "dnipropetrovsk",
+		  "kharkiv",
+		  "kirovohrad",
+		  "cherkasy",
+		  "kiev",
+		  "chernihiv",
+		  "sumy"
+		],
+		"sumy": [
+		  "kharkiv",
+		  "chernihiv",
+		  "poltava",
+		  "russia"
+		],
+		"dnipropetrovsk": [
+		  "kherson",
+		  "kirovohrad",
+		  "mykolaiv",
+		  "zaporizhia",
+		  "donetsk",
+		  "kharkiv",
+		  "poltava"
+		],
+		"kharkiv": [
+		  "dnipropetrovsk",
+		  "luhansk",
+		  "donetsk",
+		  "poltava",
+		  "sumy",
+		  "russia"
+		],
+		"luhansk": [
+		  "kharkiv",
+		  "luhansk-2022",
+		  "donetsk-2022",
+		  "donetsk",
+		  "russia"
+		],
+		"donetsk": [
+		  "dnipropetrovsk",
+		  "kharkiv",
+		  "luhansk",
+		  "donetsk-2022",
+		  "zaporizhia"
+		],
+		"luhansk-2022": [
+		  "luhansk",
+		  "donetsk-2022",
+		  "russia"
+		],
+		"donetsk-2022": [
+		  "luhansk",
+		  "luhansk-2022",
+		  "donetsk",
+		  "russia"
+		],
+		"northern-ireland": [
+		  "ulster",
+		  "connaught",
+		  "leinster"
+		],
+		"cornwall": [
+		  "sw-england"
+		],
+		"london": [
+		  "se-england",
+		  "east-england"
+		],
+		"se-england": [
+		  "sw-england",
+		  "west-midlands",
+		  "east-midlands",
+		  "east-england",
+		  "london"
+		],
+		"east-england": [
+		  "se-england",
+		  "london",
+		  "east-midlands"
+		],
+		"east-midlands": [
+		  "se-england",
+		  "west-midlands",
+		  "east-england",
+		  "yorkshire",
+		  "nw-england"
+		],
+		"sw-england": [
+		  "se-england",
+		  "cornwall",
+		  "west-midlands"
+		],
+		"west-midlands": [
+		  "se-england",
+		  "sw-england",
+		  "wales",
+		  "east-midlands",
+		  "yorkshire",
+		  "nw-england"
+		],
+		"nw-england": [
+		  "wales",
+		  "west-midlands",
+		  "east-midlands",
+		  "yorkshire",
+		  "ne-england",
+		  "scotland"
+		],
+		"wales": [
+		  "west-midlands",
+		  "nw-england"
+		],
+		"yorkshire": [
+		  "west-midlands",
+		  "east-midlands",
+		  "ne-england",
+		  "nw-england"
+		],
+		"ne-england": [
+		  "yorkshire",
+		  "nw-england",
+		  "scotland"
+		],
+		"scotland": [
+		  "nw-england",
+		  "ne-england"
+		],
+		"ulster": [
+		  "northern-ireland",
+		  "connaught",
+		  "leinster"
+		],
+		"leinster": [
+		  "northern-ireland",
+		  "ulster",
+		  "munster",
+		  "connaught"
+		],
+		"connaught": [
+		  "northern-ireland",
+		  "ulster",
+		  "leinster",
+		  "munster"
+		],
+		"munster": [
+		  "leinster",
+		  "connaught"
+		]
 	}
 }

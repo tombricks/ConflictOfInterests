@@ -1,27 +1,56 @@
 {
-    "GBR_Charles_III": {
-        "name": "GBR_Charles_III",
-        "portrait": "assets/portraits/GBR_Charles_III.png",
+    "GBR_Elizabeth_II": {
+        "name": "GBR_Elizabeth_II",
+        "portrait": "assets/portraits/GBR_Elizabeth_II.png",
+        "country": "GBR",
+        "gender": "f"
+    },
+    "GBR_Charles_of_Wales": {
+        "name": "GBR_Charles_of_Wales",
+        "portrait": "assets/portraits/GBR_Charles_of_Wales.png",
+        "country": "GBR",
         "gender": "m"
     },
-    "GBR_Rishi_Sunak": {
-        "name": "GBR_Rishi_Sunak",
-        "portrait": "assets/portraits/GBR_Rishi_Sunak.png",
+    "GBR_Boris_Johnson": {
+        "name": "GBR_Boris_Johnson",
+        "portrait": "assets/portraits/GBR_Boris_Johnson.png",
+        "country": "GBR",
         "gender": "m"
     },
     "GBR_Dominic_Raab": {
         "name": "GBR_Dominic_Raab",
         "portrait": "assets/portraits/GBR_Dominic_Raab.png",
+        "country": "GBR",
         "gender": "m"
     },
-    "GBR_Jeremy_Hunt": {
-        "name": "GBR_Jeremy_Hunt",
-        "portrait": "assets/portraits/GBR_Jeremy_Hunt.png",
+    "GBR_Rishi_Sunak": {
+        "name": "GBR_Rishi_Sunak",
+        "portrait": "assets/portraits/GBR_Rishi_Sunak.png",
+        "country": "GBR",
+        "gender": "m"
+    },
+    "GBR_Liz_Truss": {
+        "name": "GBR_Liz_Truss",
+        "portrait": "assets/portraits/GBR_Liz_Truss.png",
+        "country": "GBR",
+        "gender": "f"
+    },
+    "GBR_Priti_Patel": {
+        "name": "GBR_Priti_Patel",
+        "portrait": "assets/portraits/GBR_Priti_Patel.png",
+        "country": "GBR",
+        "gender": "f"
+    },
+    "GBR_Ben_Wallace": {
+        "name": "GBR_Ben_Wallace",
+        "portrait": "assets/portraits/GBR_Ben_Wallace.png",
+        "country": "GBR",
         "gender": "m"
     },
     "GBR_Keir_Starmer": {
         "name": "GBR_Keir_Starmer",
         "portrait": "assets/portraits/GBR_Keir_Starmer.png",
+        "country": "GBR",
         "gender": "m"
     }
 }

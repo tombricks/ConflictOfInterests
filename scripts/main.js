@@ -6,7 +6,7 @@ var data_player = ""
 var data_events = {}
 var data_decisions = {}
 var data_variables = {}
-var data_on_actions = {}
+var data_on_actions = { "on_tile_controller_change_default": [] }
 var localisation = {}
 var fired_events = {}
 var turn = 0;
@@ -30,11 +30,37 @@ function return_flag(flag, width, height) {
 }
 function on_tile_click(tile) {
     if (window.event.ctrlKey) {
-        load_player(data_tiles[tile].controller);
+        if (map_style == "tile_connections") {
+            map_style_context = tile;
+            load_map_style();
+        }
+        else {
+            load_player(data_tiles[tile].controller);
+        }
     }
     else if (window.event.altKey) {
-        change_tile_controller(tile, data_player);
+        if (map_style == "tile_connections") {
+            if (data_tiles[map_style_context].connections.includes(tile)) {
+                data_tiles[map_style_context].connections.splice(data_tiles[map_style_context].connections.indexOf(tile), 1);
+                data_tiles[tile].connections.splice(data_tiles[tile].connections.indexOf(map_style_context), 1);
+            }
+            else {
+                data_tiles[map_style_context].connections.push(tile);
+                data_tiles[tile].connections.push(map_style_context);
+            }
+            load_map_style();
+        }
+        else {
+            change_tile_controller(tile, data_player);
+        }
     }
+}
+function export_connections() {
+    var out = {};
+    for (tile in data_tiles) {
+        out[tile] = data_tiles[tile].connections;
+    }
+    console.log(out);
 }
 function on_tile_over(tile) {
     tooltip_text = `<b style="color:yellow">${get_localisation(data_tiles[tile].name)}</b><br>${return_flag(data_countries[data_tiles[tile].controller].flag, 25, 17)} ${get_localisation(data_countries[data_tiles[tile].controller].long_name)}`;
@@ -92,7 +118,21 @@ function tile_style(tile) {
             break;
         case "country_selected":
             if (data_tiles[tile].controller == map_style_context) {
-                color1 = "#0000FF"
+                color1 = "#FFFFFF"
+            }
+            else if (data_tiles[tile].claims.includes(map_style_context)) {
+                color1 = "#888888"
+            }
+            else {
+                color1 = "#000000"
+            }
+            break;
+        case "tile_connections":
+            if (tile == map_style_context) {
+                color1 = "#FFFFFF"
+            }
+            else if (data_tiles[map_style_context].connections.includes(tile)) {
+                color1 = "#888888"
             }
             else {
                 color1 = "#000000"
@@ -111,7 +151,7 @@ function diplomacy_tab_generate() {
     $("#diplo-hr").remove();
     $("#diplomacy-tab").append(`<div onmouseover="diplomacy_entry_over('${data_player}')" onmouseout="diplomacy_entry_out()" class="diplomacy-tab-entry shadow"><b><i>${return_flag(data_countries[data_player].flag, 25, 17)} ${get_localisation(data_countries[data_player].long_name)}</i></b></div><hr id="diplo-hr">`);
 
-    for (country in data_countries) {
+    for (country of [...Object.keys(data_countries)].sort()) {
         if (country != data_player) {
             $("#diplomacy-tab").append(`<div onmouseover="diplomacy_entry_over('${country}')" onmouseout="diplomacy_entry_out()" class="diplomacy-tab-entry shadow"><b>${return_flag(data_countries[country].flag, 25, 17)} ${get_localisation(data_countries[country].long_name)}</b></div>`);
         }
@@ -153,69 +193,41 @@ function politics_tab_generate() {
         </td>`
         }
     }
-    var txt_govt = "";
-    var txt_govt_title = "";
-    var txt_govt_portrait = "";
-    var txt_govt_name = "";
-    var i = 0;
-    for (person of politics.government_members) {
-        if (is_position_vacant(person, data_player)) {
-            txt_govt_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
-            txt_govt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/unknown.png" /></td>`
-            txt_govt_name += get_localisation(`<td style="width:33.333%"><i>Vacant</i></td>`);
-        }
-        else {
-            txt_govt_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
-            txt_govt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="${data_people[politics.positions[person].person].portrait}" /></td>`
-            txt_govt_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
-        }
-        if ((i+1) % 3 == 0) {
-            txt_govt += `<tr>${txt_govt_title}</tr><tr>${txt_govt_portrait}</tr><tr>${txt_govt_name}</tr>`
-            txt_govt_title = "";
-            txt_govt_portrait = "";
-            txt_govt_name = "";
-        }
-        i++;
-    }
-    txt_govt += `<tr>${txt_govt_title}</tr><tr>${txt_govt_portrait}</tr><tr>${txt_govt_name}</tr>`
-
-    var txt_other = "";
-    var txt_other_title = "";
-    var txt_other_portrait = "";
-    var txt_other_name = "";
-    var i = 0;
-    for (person of politics.other_positions) {
-        if (is_position_vacant(person, data_player)) {
-            txt_other_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
-            txt_other_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/unknown.png" /></td>`
-            txt_other_name += get_localisation(`<td style="width:33.333%"><i>Vacant</i></td>`);
-        }
-        else {
-            txt_other_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
-            txt_other_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="${data_people[politics.positions[person].person].portrait}" /></td>`
-            txt_other_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
-        }
-        if ((i+1) % 3 == 0) {
-            txt_other += `<tr>${txt_other_title}</tr><tr>${txt_other_portrait}</tr><tr>${txt_other_name}</tr>`
-            txt_other_title = "";
-            txt_other_portrait = "";
-            txt_other_name = "";
-        }
-        i++;
-    }
-    txt_other += `<tr>${txt_other_title}</tr><tr>${txt_other_portrait}</tr><tr>${txt_other_name}</tr>`
 
     $("#politics-tab").append(`<table style="width:100%;table-layout:fixed;">
     <tr>${txt_main}</tr>
-    </table>
-    <h2>Government</h2>
-    <table style="width:100%;table-layout:fixed;">
-    ${txt_govt}
-    </table>
-    <h2>Other</h2>
-    <table style="width:100%;table-layout:fixed;">
-    ${txt_other}
     </table>`)
+
+    for (section in politics.sections) {
+        var txt = "";
+        var txt_title = "";
+        var txt_portrait = "";
+        var txt_name = "";
+        var i = 0;
+        for (person of politics.sections[section]) {
+            if (is_position_vacant(person, data_player)) {
+                txt_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
+                txt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="assets/portraits/unknown.png" /></td>`
+                txt_name += get_localisation(`<td style="width:33.333%"><i>Vacant</i></td>`);
+            }
+            else {
+                txt_title += `<td style="width:33.333%">${get_localisation(`<b>$$this.position_title,${person}$$</b>`)}<br></td>`;
+                txt_portrait += `<td style="width:33.333%"><img class="shadow" style="width:75px" src="${data_people[politics.positions[person].person].portrait}" /></td>`
+                txt_name += get_localisation(`<td style="width:33.333%">$$this.position_tag,${person}.name$$</td>`);
+            }
+            if ((i+1) % 3 == 0) {
+                txt += `<tr>${txt_title}</tr><tr>${txt_portrait}</tr><tr>${txt_name}</tr>`
+                txt_title = "";
+                txt_portrait = "";
+                txt_name = "";
+            }
+            i++;
+        }
+        txt += `<tr>${txt_title}</tr><tr>${txt_portrait}</tr><tr>${txt_name}</tr>`
+        $("#politics-tab").append(`<h2>${get_localisation(section, [data_player])}</h2><table style="width:100%;table-layout:fixed;">
+        <tr>${txt}</tr>
+        </table>`)
+    }
 
 }
 function decision_entry_over(decision) {
@@ -466,6 +478,21 @@ $(window).on('load', function() {
                     for (new_file of mod_json.map) {
                         $.getJSON(dir+new_file, function (new_json) {
                             data_tiles = {...data_tiles, ...new_json.tiles};
+                            for (tile in data_tiles) {
+                                data_tiles[tile].connections = data_tiles[tile].connections || [];
+                            }
+
+                            for (top2 in new_json.connections) {
+                                for (tile of new_json.connections[top2]) {
+                                    if (!(data_tiles[top2].connections.includes(tile))) {
+                                        data_tiles[top2].connections.push(tile);
+                                    }
+                                    if (!(data_tiles[tile].connections.includes(top2))) {
+                                        data_tiles[tile].connections.push(top2);
+                                    }
+                                }
+                            }
+
                             console.log(`Loaded: ${dir}${new_file}`);
                         });
                     }
@@ -497,15 +524,21 @@ $(window).on('load', function() {
                 if (mod_json.on_actions !== undefined) {
                     for (new_file of mod_json.on_actions) {
                         $.getJSON(dir+new_file, function (new_json) {
-                            for (action in new_json) {
-                                switch (action) {
+                            for (on_action in new_json) {
+                                switch (on_action) {
                                     case "on_tile_controller_change":
-                                        for (tile in new_json[action]) {
-                                            if (tile in data_tiles) {
-                                                data_tiles[tile].on_tile_controller_change = new_json[action][tile];
-                                            }
-                                            else if (tile == "default") {
-                                                data_on_actions["on_tile_controller_change_default"] = new_json[action][tile];
+                                        for (entry in new_json[on_action]) {
+                                            for (tile of new_json[on_action][entry].tiles) {
+                                                if (tile != "default") {
+                                                    if (data_tiles[tile].on_tile_controller_change === undefined) {
+                                                        data_tiles[tile].on_tile_controller_change = [];
+                                                    }
+                                                    
+                                                    data_tiles[tile].on_tile_controller_change.push(new_json[on_action][entry].effects);
+                                                }
+                                                else {
+                                                    data_on_actions["on_tile_controller_change_default"].push(new_json[on_action][entry].effects);
+                                                }
                                             }
                                         }
                                         break;
@@ -555,6 +588,8 @@ $(window).on('load', function() {
             data_countries[country].allowed_decisions = [];
             data_countries[country].visible_decisions = [];
             data_countries[country].available_decisions = [];
+            data_countries[country].controlled_tiles = [];
+            data_countries[country].claimed_tiles = [];
         }
         $("#map-container").load(maps[maps.length-1], function() {
             console.log("Loaded map: "+maps[maps.length-1]);
@@ -567,6 +602,14 @@ $(window).on('load', function() {
             $("#tile-"+key).attr('onmouseover', 'on_tile_over("'+key+'")');
             $("#tile-"+key).attr('onmouseout', 'clear_tooltip()');
             $("#tile-"+key).attr('data-tile', key);
+            data_tiles[key].on_tile_controller_change = data_tiles[key].on_tile_controller_change || [];
+            data_tiles[key].connections = data_tiles[key].connections || [];
+
+            data_tiles[key].claims = data_tiles[key].claims || [];
+            data_countries[data_tiles[key].controller].controlled_tiles.push(key);
+            for (claim of data_tiles[key].claims) {
+                data_countries[claim].claimed_tiles.push(key);
+            }
         }
         for (decision in data_decisions) {
             for (country in data_countries) {
@@ -1269,9 +1312,13 @@ function change_tile_controller(tile, controller) {
     var old_controller = data_tiles[tile].controller;
     data_tiles[tile].controller = controller;
     if (data_tiles[tile].on_tile_controller_change !== undefined) {
-        run_effect(data_tiles[tile].on_tile_controller_change, [old_controller, controller, tile], false, true);
+        for (entry of data_tiles[tile].on_tile_controller_change) {
+            run_effect(entry, [old_controller, controller, tile], false, true);
+        }
     }
-    run_effect(data_on_actions["on_tile_controller_change_default"], [old_controller, controller, tile], false, true);
+    for (entry of data_on_actions["on_tile_controller_change_default"])
+        run_effect(entry, [old_controller, controller, tile], false, true);
+    
     tile_style(tile);
 }
 function has_position(position, tag) {

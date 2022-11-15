@@ -8,20 +8,37 @@
             "positions": {
                 "head_of_state": {
                     "title": { "f": "title_queen", "m": "title_king", "nb": "title_quing" },
-                    "person": "GBR_Charles_III"
+                    "person": "GBR_Elizabeth_II"
                 },
                 "head_of_government": {
                     "title": "title_prime_minister",
-                    "person": "GBR_Rishi_Sunak",
+                    "person": "GBR_Boris_Johnson",
                     "deputy": "deputy_prime_minister"
                 },
                 "deputy_prime_minister": {
                     "title": "title_deputy_prime_minister",
-                    "person": "GBR_Dominic_Raab"
+                    "person": "GBR_Dominic_Raab",
+                    "changeable": true
                 },
                 "chancellor": {
                     "title": "title_chancellor_exchequer",
-                    "person": "GBR_Jeremy_Hunt"
+                    "person": "GBR_Rishi_Sunak",
+                    "changeable": true
+                },
+                "foreign_secretary": {
+                    "title": "title_foreign_secretary",
+                    "person": "GBR_Liz_Truss",
+                    "changeable": true
+                },
+                "home_secretary": {
+                    "title": "title_home_secretary",
+                    "person": "GBR_Priti_Patel",
+                    "changeable": true
+                },
+                "defence_secretary": {
+                    "title": "title_defence_secretary",
+                    "person": "GBR_Ben_Wallace",
+                    "changeable": true
                 },
                 "opposition_leader": {
                     "title": "title_opposition_leader",
@@ -29,8 +46,10 @@
                 }
             },
             "main_leaders": [ "head_of_state", "head_of_government" ],
-            "government_members": [ "head_of_government", "deputy_prime_minister", "chancellor" ],
-            "other_positions": [ "opposition_leader" ]
+            "sections" :{
+                "f_hm_government": [ "head_of_government", "deputy_prime_minister", "chancellor", "foreign_secretary", "home_secretary", "defence_secretary" ],
+                "f_hm_opposition": [ "opposition_leader" ]
+            }
         }
     },
 

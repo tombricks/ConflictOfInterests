@@ -1,52 +1,49 @@
 {
     "comment": [ "prevcontroller", "controller", "tile" ],
-    "on_tile_controller_change": {
-        "ireland": [
-            {
-                "type": "scope",
-                "tag": "prev1",
-                "effects": [
-                    {
-                        "type": "if",
-                        "limit": {
-                            "triggers": [{
-                                "type": "tag",
-                                "tag": "GBR"
-                            }]
-                        },
-                        "effects": [
-                            {
-                                "type": "fire_event",
-                                "event": "GBR_Ireland"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ],
-        "northern-ireland": [
-            {
-                "type": "scope",
-                "tag": "prev1",
-                "effects": [
-                    {
-                        "type": "if",
-                        "limit": {
-                            "triggers": [{
-                                "type": "tag",
-                                "tag": "IRE"
-                            }]
-                        },
-                        "effects": [
-                            {
-                                "type": "fire_event",
-                                "event": "IRE_Unification"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ],
-        "default": []
-    }
+    "on_tile_controller_change": [
+        {
+            "tiles": [ "ulster", "leinster", "connaught", "munster" ],
+            "effects": [
+                {
+                    "type": "scope",
+                    "tag": "prev1",
+                    "effects": [
+                        {
+                            "type": "if",
+                            "limit": {
+                                "triggers": [
+                                    {
+                                        "type": "tag",
+                                        "tag": "GBR"
+                                    },
+                                    {
+                                        "type": "controls_tile",
+                                        "target": "ulster"
+                                    },
+                                    {
+                                        "type": "controls_tile",
+                                        "target": "leinster"
+                                    },
+                                    {
+                                        "type": "controls_tile",
+                                        "target": "connaught"
+                                    },
+                                    {
+                                        "type": "controls_tile",
+                                        "target": "munster"
+                                    }
+                                ]
+                            },
+                            "effects": [
+                                {
+                                    "type": "fire_event",
+                                    "event": "GBR_Ireland"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
