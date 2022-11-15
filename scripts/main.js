@@ -81,6 +81,8 @@ function load_player(tag) {
     $("#player-flag").attr("src", data_countries[data_player].flag);
     $("#player-title").html(get_localisation(data_countries[data_player].long_name));
     diplomacy_tab_generate();
+    decision_tab_generate();
+    politics_tab_generate();
 }
 function tile_style(tile) {
     var color1 = "#000000"
