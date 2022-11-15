@@ -114,3 +114,13 @@ body {
 .decision-button:hover {
     cursor: pointer;
 }
+.event-image {
+    width: 100%;
+}
+.event-option {
+    background-color: grey;
+    padding: 4px;
+}
+.event-option:hover {
+    cursor: pointer;
+}

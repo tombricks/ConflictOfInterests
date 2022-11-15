@@ -14,5 +14,22 @@
                 ]
             }
         ]
+    },
+    
+    "IRE_Unification": {
+        "title": "IRE_Unification.title",
+        "desc": "IRE_Unification.desc",
+        "options": [
+            {
+                "name": "IRE_Unification.1",
+                "ai": [ { "type": "add", "value": 50 } ],
+                "effects": [
+                    {
+                        "type": "set_country_long_name",
+                        "name": "IRE_Republic_long"
+                    }
+                ]
+            }
+        ]
     }
 }

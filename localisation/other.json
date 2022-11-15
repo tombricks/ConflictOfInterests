@@ -22,6 +22,10 @@
     "GBR_Keir_Starmer": "Keir Starmer",
 
     "GBR_Ireland.title": "Reunification of <span style=\"color:red\">Great Britain</span> and <span style=\"color:green\">Ireland</span>",
-    "GBR_Ireland.desc": "After many decades separate, the United Kingdom has finally reconquered the island of Ireland. Northern Ireland has been expanded to cover the whole 32-county nation and the official name of the $$GBR.flag$$ <span style=\"color:yellow\">United Kingdom</span> has been changed to reflect this.",
-    "GBR_Ireland.1": "Rule, Britannia!"
+    "GBR_Ireland.desc": "<img src=\"https://www.history.com/.image/t_share/MTY5MTYzMzYzMjU3OTUxNTIx/uk-gettyimages-157482436.jpg\" style=\"width: 100%;\" class=\"event-image shadow\">After many decades separate, the United Kingdom has finally reconquered the island of Ireland. Northern Ireland has been expanded to cover the whole 32-county nation and the official name of the $$GBR.flag$$ <span style=\"color:yellow\">United Kingdom</span> has been changed to reflect this.",
+    "GBR_Ireland.1": "Rule, Britannia!",
+
+    "IRE_Unification.title": "Reunification of <span style=\"color:green\">Ireland</span>",
+    "IRE_Unification.desc": "<img src=\"https://www.irishcentral.com/uploads/article-v2/2020/2/137321/the_economist_united_ireland_likely___getty.jpg\" style=\"width: 100%;\" class=\"event-image shadow\">After many decades separate, Northern Ireland has unified with the rest of the Irish nation to form a 32-county republic. Reunification comes, thankfully, with mostly peace. The new Irish constitution guarantees a federal, secular and democratic state.",
+    "IRE_Unification.1": "Éirinn go Brách!"
 }

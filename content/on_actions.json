@@ -24,6 +24,29 @@
                 ]
             }
         ],
+        "northern-ireland": [
+            {
+                "type": "scope",
+                "tag": "prev1",
+                "effects": [
+                    {
+                        "type": "if",
+                        "limit": {
+                            "triggers": [{
+                                "type": "tag",
+                                "tag": "IRE"
+                            }]
+                        },
+                        "effects": [
+                            {
+                                "type": "fire_event",
+                                "event": "IRE_Unification"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
         "default": []
     }
 }

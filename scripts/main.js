@@ -1202,7 +1202,7 @@ function fire_event(event, scopes) {
         var opts = ""
         var i = 0;
         data_events[ event ].options.forEach(option => {
-            opts += `<br><button id="event-${event_id}-option-${i}" data-option=${i} data-event=${event_id} >${get_localisation(data_events[ event ].options[i].name)}</button>`
+            opts += `<br><div class="event-option shadow" id="event-${event_id}-option-${i}" data-option=${i} data-event=${event_id}><b>${get_localisation(data_events[ event ].options[i].name)}</b></div>`
             i += 1;
         });
         var eventhtml = `<div id="event-${event_id}" class="event shadow">
