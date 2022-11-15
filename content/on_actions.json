@@ -1,6 +1,6 @@
 {
-    "comment": [ "prevowner", "owner", "tile" ],
-    "on_tile_owner_change": {
+    "comment": [ "prevcontroller", "controller", "tile" ],
+    "on_tile_controller_change": {
         "ireland": [
             {
                 "type": "scope",

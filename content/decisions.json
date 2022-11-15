@@ -84,7 +84,7 @@
                 "limit": {
                     "type": "and",
                     "triggers": [{
-                        "type": "owner",
+                        "type": "controller",
                         "target": "IRE"
                     }]
                 },

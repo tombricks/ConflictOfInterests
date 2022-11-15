@@ -30,14 +30,14 @@ function return_flag(flag, width, height) {
 }
 function on_tile_click(tile) {
     if (window.event.ctrlKey) {
-        load_player(data_tiles[tile].owner);
+        load_player(data_tiles[tile].controller);
     }
     else if (window.event.altKey) {
-        change_tile_owner(tile, data_player);
+        change_tile_controller(tile, data_player);
     }
 }
 function on_tile_over(tile) {
-    tooltip_text = `<b style="color:yellow">${get_localisation(data_tiles[tile].name)}</b><br>${return_flag(data_countries[data_tiles[tile].owner].flag, 25, 17)} ${get_localisation(data_countries[data_tiles[tile].owner].long_name)}`;
+    tooltip_text = `<b style="color:yellow">${get_localisation(data_tiles[tile].name)}</b><br>${return_flag(data_countries[data_tiles[tile].controller].flag, 25, 17)} ${get_localisation(data_countries[data_tiles[tile].controller].long_name)}`;
 }
 function on_event_option_over(option) {
     var event_id = $(option).data('event');
@@ -88,10 +88,10 @@ function tile_style(tile) {
     var color1 = "#000000"
     switch (map_style) {
         case "country":
-            color1 = data_countries[data_tiles[tile].owner].color;
+            color1 = data_countries[data_tiles[tile].controller].color;
             break;
         case "country_selected":
-            if (data_tiles[tile].owner == map_style_context) {
+            if (data_tiles[tile].controller == map_style_context) {
                 color1 = "#0000FF"
             }
             else {
@@ -298,8 +298,8 @@ function get_localisation(text, scopes=[data_player]) {
                     case "country_adj":
                         left = get_localisation(data_countries[get_token(left, scopes)].adj);
                         break;
-                    case "owner_tag":
-                        left = data_tiles[get_token(left, scopes)].owner;
+                    case "controller_tag":
+                        left = data_tiles[get_token(left, scopes)].controller;
                         break;
                     case "tag_var":
                         left = get_token(data_variables[left][func[1]], scopes);
@@ -499,13 +499,13 @@ $(window).on('load', function() {
                         $.getJSON(dir+new_file, function (new_json) {
                             for (action in new_json) {
                                 switch (action) {
-                                    case "on_tile_owner_change":
+                                    case "on_tile_controller_change":
                                         for (tile in new_json[action]) {
                                             if (tile in data_tiles) {
-                                                data_tiles[tile].on_tile_owner_change = new_json[action][tile];
+                                                data_tiles[tile].on_tile_controller_change = new_json[action][tile];
                                             }
                                             else if (tile == "default") {
-                                                data_on_actions["on_tile_owner_change_default"] = new_json[action][tile];
+                                                data_on_actions["on_tile_controller_change_default"] = new_json[action][tile];
                                             }
                                         }
                                         break;
@@ -672,7 +672,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                         tt += get_localisation(short_tt ? `${emb}Annexes <span style="color:yellow">$$${target}.name$$</span><br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> annexes <span style="color:yellow">$$${target}.name$$</span><br>`, scopes)
                     }
                     if (execute && !effect.no_execute) {
-                        change_tile_owner(target, scope, scopes);
+                        change_tile_controller(target, scope, scopes);
                     }
                 }
                 else {
@@ -974,18 +974,18 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 tt2 = `Always true<br>`;
                 local = true;
                 break;
-            case "owns_tile":
-                tt2 = get_localisation(short_tt ? `Owns <span style="color:yellow">$$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> owns <span style="color:yellow">$$${target}.name$$</span><br>`, scopes);
-                if (data_tiles[target].owner == scope) {
+            case "controls_tile":
+                tt2 = get_localisation(short_tt ? `Controls <span style="color:yellow">$$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> controls <span style="color:yellow">$$${target}.name$$</span><br>`, scopes);
+                if (data_tiles[target].controller == scope) {
                     local = true;
                 }
                 else {
                     local = false; 
                 }
                 break;
-            case "owner":
-                tt2 = get_localisation(short_tt ? `Owned by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.name$$</span> is owned by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
-                if (data_tiles[scope].owner == target) {
+            case "controller":
+                tt2 = get_localisation(short_tt ? `Controlled by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.name$$</span> is controlled by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
+                if (data_tiles[scope].controller == target) {
                     local = true;
                 }
                 else {
@@ -1265,13 +1265,13 @@ function fire_decision(decision, tag) {
     }
     evaluate_decisions();
 }
-function change_tile_owner(tile, owner) {
-    var old_owner = data_tiles[tile].owner;
-    data_tiles[tile].owner = owner;
-    if (data_tiles[tile].on_tile_owner_change !== undefined) {
-        run_effect(data_tiles[tile].on_tile_owner_change, [old_owner, owner, tile], false, true);
+function change_tile_controller(tile, controller) {
+    var old_controller = data_tiles[tile].controller;
+    data_tiles[tile].controller = controller;
+    if (data_tiles[tile].on_tile_controller_change !== undefined) {
+        run_effect(data_tiles[tile].on_tile_controller_change, [old_controller, controller, tile], false, true);
     }
-    run_effect(data_on_actions["on_tile_owner_change_default"], [old_owner, owner, tile], false, true);
+    run_effect(data_on_actions["on_tile_controller_change_default"], [old_controller, controller, tile], false, true);
     tile_style(tile);
 }
 function has_position(position, tag) {
