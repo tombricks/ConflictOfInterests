@@ -38,12 +38,22 @@
                 </div>
             </div>
             <div id="right-panel">
-                <?php
-                //echo file_get_contents("assets/worldmap.svg");
-                ?>
                 <div id="map-container">
                 </div>
-                <button id="next-turn" onclick="do_turn()" style="position:absolute;right:8px;top:8px;">Next Turn</button>
+                <div id="turn-box" style="position:absolute;right:8px;top:8px;width:256px;height:96px;background:red;text-align:center;padding:8px;">
+                    <b id="date">gayday 69 gayember 6969</b>
+                    <br>
+                    <br>
+                    <!-- <button id="next-turn" onclick="do_turn()" style="position:absolute;right:8px;top:8px;">Next Turn</button> -->
+                    <button>Unpause</button>
+                    <button onclick="do_turn()">Next Turn</button>
+                    <br>
+                    <input type="radio" name="speed" for="1"></input>
+                    <input type="radio" name="speed" for="2"></input>
+                    <input type="radio" name="speed" for="3"></input>
+                    <input type="radio" name="speed" for="4"></input>
+                    <input type="radio" name="speed" for="5"></input>
+                </div>
             </div>
         </div>
         <div id="events">

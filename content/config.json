@@ -1,4 +1,22 @@
 {
-    "player": "GBR",
-    "guh": true
+    "default_tag": "GBR",
+
+    "days": [ "saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday" ],
+    "months": {
+        "jan": 31,
+        "feb": 28,
+        "mar": 31,
+        "apr": 30,
+        "may": 31,
+        "jun": 30,
+        "jul": 31,
+        "aug": 31,
+        "sep": 30,
+        "oct": 31,
+        "nov": 30,
+        "dec": 31
+    },
+    "month": "jan",
+    "date": 1,
+    "year": 2022
 }

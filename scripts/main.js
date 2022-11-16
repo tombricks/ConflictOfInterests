@@ -9,9 +9,14 @@ var data_variables = {}
 var data_on_actions = { "on_tile_controller_change_default": [] }
 var localisation = {}
 var fired_events = {}
-var turn = 0;
+var turn = -1;
 var schedule = {}
 var data_people = {};
+var days = [];
+var months = [];
+var date = 0;
+var year = 0;
+var month;
 
 var tooltip_text = "";
 var map_style = "country";
@@ -386,81 +391,6 @@ $(window).on('load', function() {
             async: false
         });
         for (dir of mods) {
-        /* $.getJSON("content/countries.json", function(json) {
-            data_countries = json;
-            for (country in data_countries) {
-                if (data_countries[country].color === undefined) {
-                    data_countries[country].color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
-                }
-                if (data_countries[country].name === undefined) {
-                    data_countries[country].name = country;
-                }
-                if (data_countries[country].long_name === undefined) {
-                    data_countries[country].long_name = data_countries[country].name;
-                }
-                if (data_countries[country].flag === undefined) {
-                    data_countries[country].flag = "blank.png";
-                }
-                data_countries[country].original_name = data_countries[country].name;
-                data_countries[country].original_long_name = data_countries[country].long_name;
-                data_countries[country].allowed_decisions = [];
-                data_countries[country].visible_decisions = [];
-                data_countries[country].available_decisions = [];
-
-                data_variables[country] = {};
-            }
-            $.getJSON("content/map.json", function(json) {
-                data_tiles = json.tiles;
-                for (key in data_tiles) {
-                    if (!data_tiles[key].name) {
-                        data_tiles[key].name = "tile_" + key;
-                    }
-                    $("#tile-"+key).attr('onclick', 'on_tile_click("'+key+'")');
-                    $("#tile-"+key).attr('onmouseover', 'on_tile_over("'+key+'")');
-                    $("#tile-"+key).attr('onmouseout', 'clear_tooltip()');
-                    $("#tile-"+key).attr('data-tile', key);
-                    data_variables[key] = {};
-                }
-                load_map_style();
-                $.getJSON("content/events.json", function(json) {
-                    data_events = json;
-                    $.getJSON("content/decisions.json", function(json) {
-                        data_decisions = json;
-                        for (decision in data_decisions) {
-                            for (country in data_countries) {
-                                if (run_trigger(data_decisions[decision].allowed, [country])[0]) {
-                                    data_countries[country].allowed_decisions.push(decision);
-                                }
-                            }
-                        }
-                        $.getJSON("content/people.json", function(json) {
-                            data_people = json;
-                            for(person in data_people) {
-                                data_variables[person] = {};
-                            }
-                            $.getJSON("assets/localisation.json", function(json) {
-                                localisation = json;
-                                $.getJSON("content/config.json", function(json) {
-                                    load_player(json.player);
-                                    do_turn();
-                                    diplomacy_tab_generate();
-                                    $("#svg2").svgPanZoom(
-                                        {
-                                        maxZoom: 100, 
-                                        animationTime: 0,
-                                        zoomFactor: 0.05,
-                                        initialViewBox: "250 0 500 500",
-                                        limit: { x:-0, y:-0, x2:1000, y2:1000 }
-                                        }
-                                    );
-                                });
-                            });
-
-                        });
-                    });
-                });
-            });
-        }); */
             dir = dir.replace('\\', '/')
             if (dir.charAt(dir.length- 1) != '/' && dir != '') {
                 dir += '/'
@@ -474,6 +404,7 @@ $(window).on('load', function() {
                         });
                     }
                 }
+
                 if (mod_json.map !== undefined) {
                     for (new_file of mod_json.map) {
                         $.getJSON(dir+new_file, function (new_json) {
@@ -556,8 +487,16 @@ $(window).on('load', function() {
                         });
                     }
                 }
-                if (mod_json.default_tag !== undefined) {
-                    data_player = mod_json.default_tag;
+                if (mod_json.config !== undefined) {
+                    $.getJSON(dir+mod_json.config, function (new_json) {
+                        data_player = new_json.default_tag || data_player;
+                        days = new_json.days || days;
+                        months = new_json.months || months;
+                        date = new_json.date-1 || date;
+                        month = new_json.month || month;
+                        year = new_json.year || year;
+                        console.log(`Loaded: ${dir}${new_file}`);
+                    });
                 }
                 if (mod_json.mapsvg !== undefined) {
                     maps.push(dir+mod_json.mapsvg);
@@ -661,12 +600,42 @@ function get_token(key, scopes) {
     else if (key.toLowerCase().substring(0, 4) == "prev") {
         return scopes[scopes.length-(1+parseInt(key.substring(4)))]; 
     }
-    else if (key.includes("var:")) {
+    else if (key.includes(":")) {
         var scope = scopes[scopes.length-1];
-        if (key.includes(":var:")) {
-            scope = get_token( key.substring(0, key.indexOf(":var:")), scopes );
+        var type = key.substring(0, key.indexOf(":"));
+        var token = key.substring(key.indexOf(":")+1);
+        switch (type) {
+            case "position":
+                var position;
+                if (token.includes('.')) {
+                    position = token.split('.')[1];
+                    scope = get_token(token.split('.')[0]);
+                }
+                if ( data_countries[scope].politics.positions.includes(position) ) {
+                    if ( !(is_position_vacant(position, scope)) ) {
+                        return data_countries[scope].politics.positions[position].person;
+                    }
+                    else {
+                        logic_error_log(`Logic error: get_token(): "${position}" position for ${scope} is vacant`);
+                        return scope;
+                    }
+                }
+                else {
+                    logic_error_log(`Logic error: get_token(): "${position}" position does not exist for ${scope}`);
+                    return scope;
+                }
+            case "var":
+                var variable;
+                if (token.includes('.')) {
+                    variable = token.split('.')[1];
+                    scope = get_token(token.split('.')[0]);
+                }
+                return data_variables[scope][variable] || scope;
         }
-        return data_variables[scope][key.substring(key.indexOf("var:")+4)]; 
+        //if (key.includes(":var:")) {
+        //    scope = get_token( key.substring(0, key.indexOf(":var:")), scopes );
+        //}
+        //return data_variables[scope][key.substring(key.indexOf("var:")+4)]; 
     }
     else {
         switch (key.toLowerCase()) {
@@ -709,7 +678,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
         var short_tt = effect.short_tt ?? true;
         emb = '&nbsp;'.repeat(embed*6);
         switch (effect.type) {
-            case 'set_state_control':
+            case 'set_tile_control':
                 if ((target in data_tiles) && (scope in data_countries)) {
                     if (tooltip && !effect.no_tooltip) {
                         tt += get_localisation(short_tt ? `${emb}Becomes controller of <span style="color:yellow">$$${target}.name$$</span><br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> becomes controller of <span style="color:yellow">$$${target}.name$$</span><br>`, scopes)
@@ -720,10 +689,10 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 }
                 else {
                     if (!(target in data_tiles)) {
-                        logic_error_log(`Logic error: set_state_control: "${target}" not a valid tile`);
+                        logic_error_log(`Logic error: set_tile_control: "${target}" not a valid tile`);
                     }
                     if (!(scope in data_countries)) {
-                        logic_error_log(`Logic error: set_state_control: "${scope}" not a valid country`);
+                        logic_error_log(`Logic error: set_tile_control: "${scope}" not a valid country`);
                     }
                 }
                 break;
@@ -859,23 +828,29 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                     
                     default: // Individual tag
                         var tag = get_token(effect.tag, scopes);
-                        if (tooltip && !effect.no_tooltip) {
-                            if (effect.label === undefined) {
-                                if (get_tag_type(tag) == "country") {
-                                    tt += get_localisation(`${emb}<span style="color:yellow">$$${tag}.flag$$ $$${tag}.name$$:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
+                        if (is_scope(tag, scopes)) {
+                            if (tooltip && !effect.no_tooltip) {
+                                if (effect.label === undefined) {
+                                    if (get_tag_type(tag) == "country") {
+                                        tt += get_localisation(`${emb}<span style="color:yellow">$$${tag}.flag$$ $$${tag}.name$$:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
+                                    }
+                                    else {
+                                        tt += get_localisation(`${emb}<span style="color:yellow">$$${tag}.name$$:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
+                                    }
                                 }
                                 else {
-                                    tt += get_localisation(`${emb}<span style="color:yellow">$$${tag}.name$$:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
+                                    tt += get_localisation(`${emb}<span style="color:yellow">${get_localisation(effect.label)}:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
                                 }
                             }
-                            else {
-                                tt += get_localisation(`${emb}<span style="color:yellow">${get_localisation(effect.label)}:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
+                            if (execute && !effect.no_execute) {
+                                run_effect(effects, scopes.concat(tag), false, true)
                             }
+                            break;     
                         }
-                        if (execute && !effect.no_execute) {
-                            run_effect(effects, scopes.concat(tag), false, true)
+                        else {
+                            logic_error_log(`Logic error: ${effect.tag}: "${tag}" is not a valid scope`)
+                            break;
                         }
-                        break;        
                 }
                 break;
             case "set_country_long_name":
@@ -1210,7 +1185,17 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
 }
 function do_turn() {
     turn++;
-    $("#next-turn").html(`Next Turn (Current: ${turn})`);
+    date++;
+    if (date == months[month]+1) {
+        date = 1;
+        var temp = Object.keys(months).indexOf(month) + 1;
+        if (temp == Object.keys(months).length) {
+            temp = 0;
+            year++;
+        }
+        month = Object.keys(months)[temp];
+    }
+    $("#date").html(`${get_localisation(days[turn % days.length], [])} ${date} ${get_localisation(month, [])} ${year}`);
     if (turn in schedule) {
         for (scheduledEvent in schedule[turn].events) {
             fire_event(schedule[turn].events[scheduledEvent].id, schedule[turn].events[scheduledEvent].scopes);
@@ -1332,4 +1317,8 @@ function is_position_vacant(position, tag) {
     else {
         return false;
     }
+}
+function is_scope(key, scopes) {
+    var scope = get_token(key, scopes);
+    return (key in data_tiles || key in data_countries || key in data_people );
 }

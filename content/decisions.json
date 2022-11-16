@@ -4,50 +4,41 @@
         "desc": "GBR_Annex_Ireland.desc",
         "fire_only_once": true,
         "allowed": {
-            "type": "or",
             "triggers": [
                 {
                     "type": "tag",
                     "tag": "GBR"
-                },
-                {
-                    "type": "tag",
-                    "tag": "RUS"
                 }
             ]
         },
         "visible": {
-            "type": "and",
             "triggers": []
         },
         "available": {
-            "type": "and",
             "triggers": []
         },
         "effects": [
             {
-                "type": "annex_tile",
-                "target": "ireland"
-            },
-            {
-                "type": "set_position_title",
-                "position": "head_of_state",
-                "title": { "m": "title_emperor", "f": "title_empress", "nb": "title_emprix" }
-            },
-            {
-                "type": "set_position",
-                "position": "head_of_state",
-                "person": "GBR_Jeremy_Hunt"
-            },
-            {
-                "type": "set_person_name",
-                "person": "GBR_Jeremy_Hunt",
-                "name": "GBR_Jessica_Hunt"
-            },
-            {
-                "type": "set_person_gender",
-                "person": "GBR_Jeremy_Hunt",
-                "gender": "f"
+                "type": "scope",
+                "tag": "every_tile",
+                "limit": { "triggers": [
+                    {
+                        "type": "controller",
+                        "target": "IRE"
+                    }
+                ]},
+                "effects": [
+                    {
+                        "type": "scope",
+                        "tag": "prev1",
+                        "effects": [
+                            {
+                                "type": "set_tile_control",
+                                "target": "prev1"
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
