@@ -45,14 +45,14 @@
                     <br>
                     <br>
                     <!-- <button id="next-turn" onclick="do_turn()" style="position:absolute;right:8px;top:8px;">Next Turn</button> -->
-                    <button>Unpause</button>
+                    <button id="pause-button" onclick="pause_unpause()" >Unpause</button>
                     <button onclick="do_turn()">Next Turn</button>
                     <br>
-                    <input type="radio" name="speed" for="1"></input>
-                    <input type="radio" name="speed" for="2"></input>
-                    <input type="radio" name="speed" for="3"></input>
-                    <input type="radio" name="speed" for="4"></input>
-                    <input type="radio" name="speed" for="5"></input>
+                    <input type="radio" name="speed" onclick="set_speed(1)"></input>
+                    <input type="radio" name="speed" onclick="set_speed(2)"></input>
+                    <input type="radio" name="speed" checked="checked" onclick="set_speed(3)"></input>
+                    <input type="radio" name="speed" onclick="set_speed(4)"></input>
+                    <input type="radio" name="speed" onclick="set_speed(5)"></input>
                 </div>
             </div>
         </div>

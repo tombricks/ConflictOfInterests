@@ -7,7 +7,7 @@
         "politics": {
             "positions": {
                 "head_of_state": {
-                    "title": { "f": "title_queen", "m": "title_king", "nb": "title_quing" },
+                    "title": { "f": "title_queen", "m": "title_king", "neutral": "title_quing" },
                     "person": "GBR_Elizabeth_II"
                 },
                 "head_of_government": {
@@ -46,9 +46,17 @@
                 }
             },
             "main_leaders": [ "head_of_state", "head_of_government" ],
-            "sections" :{
+            "sections": {
                 "f_hm_government": [ "head_of_government", "deputy_prime_minister", "chancellor", "foreign_secretary", "home_secretary", "defence_secretary" ],
                 "f_hm_opposition": [ "opposition_leader" ]
+            },
+            "parties": {
+                "GBR_Conservatives": {
+                    "name": "GBR_Conservatives",
+                    "long_name": "GBR_Conservatives_long",
+                    "ideology": "conservatism",
+                    "ideologies": []
+                }
             }
         }
     },

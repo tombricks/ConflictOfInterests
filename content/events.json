@@ -31,5 +31,47 @@
                 ]
             }
         ]
+    },
+    
+    "generic_character_death": {
+        "title": "generic_character_death.title",
+        "desc": "generic_character_death.desc",
+        "immediate": [
+            {
+                "type": "kill_person",
+                "target": "this"
+            },
+            {
+                "type": "scope",
+                "tag": "every_country",
+                "effects": [
+                    {
+                        "type": "fire_event",
+                        "event": "generic_character_death_news"
+                    }
+                ]
+            }
+        ],
+        "options": [
+            {
+                "name": "generic_character_death.1",
+                "ai": [ { "type": "add", "value": 50 } ],
+                "effects": [
+                ]
+            }
+        ]
+    },
+    
+    "generic_character_death_news": {
+        "title": "generic_character_death_news.title",
+        "desc": "generic_character_death_news.desc",
+        "options": [
+            {
+                "name": "generic_character_death_news.1",
+                "ai": [ { "type": "add", "value": 50 } ],
+                "effects": [
+                ]
+            }
+        ]
     }
 }

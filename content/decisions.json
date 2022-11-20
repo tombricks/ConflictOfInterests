@@ -42,6 +42,31 @@
             }
         ]
     },
+    "GBR_Operation_Andrew": {
+        "title": "Operation Andrew",
+        "desc": "Operation Andrew",
+        "fire_only_once": true,
+        "allowed": {
+            "triggers": [
+                {
+                    "type": "tag",
+                    "tag": "GBR"
+                }
+            ]
+        },
+        "visible": {
+            "triggers": []
+        },
+        "available": {
+            "triggers": []
+        },
+        "effects": [
+            {
+                "type": "kill_person",
+                "target": "GBR_Elizabeth_II"
+            }
+        ]
+    },
     "GBR_Union": {
         "title": "GBR_Union.title",
         "desc": "GBR_Union.desc",

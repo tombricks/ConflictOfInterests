@@ -16,6 +16,10 @@ var days = [];
 var months = [];
 var date = 0;
 var year = 0;
+var paused = true;
+var wasPaused = true;
+var speed = 3;
+var game_loop;
 var month;
 
 var tooltip_text = "";
@@ -26,7 +30,32 @@ var text_icons = {
     "false": '<div style="position:relative;display:inline-block;width:17px;height:17px;vertical-align:top;top:2px;"><img src="assets/texticons/no.png" style="position:absolute;left:0px;top:0px;width:17px;height:17px"></img></div>'
 }
 
+var mouseDown = 0;
+
 // USER INTERFACE STUFF
+function set_speed(sped) {
+    speed = sped;
+    if (!paused) unpause();
+}
+function pause_unpause() {
+    if (paused) {
+        unpause();
+    }
+    else {
+        pause();
+    }
+}
+function pause() {
+    $("#pause-button").html("Unpause");
+    clearInterval(game_loop);
+    paused = true;
+}
+function unpause() {
+    $("#pause-button").html("Pause");
+    clearInterval(game_loop);
+    game_loop = setInterval(do_turn, 1000/speed);
+    paused = false;
+}
 function return_flag(flag, width, height) {
     return `<div style="position:relative;display:inline-block;width:${width}px;vertical-align:top;top:2px;">
     <img src="${flag}" style="position:absolute;left:0px;top:0px;width:${width}px;height:${height}px"></img>
@@ -79,7 +108,7 @@ function clear_tooltip() {
 }
 function event_option_button(event) {
     clear_tooltip();
-    event_option( parseInt($(event).data('event')), parseInt($(event).data('option')) )
+    event_option( parseInt($(event).data('event')), parseInt($(event).data('option')) );
     $(event).parent().remove();
 }
 function handle_mousedown(e){
@@ -326,7 +355,12 @@ function get_localisation(text, scopes=[data_player]) {
                             left = get_localisation(data_countries[get_token(left, scopes)].politics.positions[func[1]].title, scopes);
                         }
                         else {
-                            left = get_localisation(data_countries[get_token(left, scopes)].politics.positions[func[1]].title[ data_people[data_countries[get_token(left, scopes)].politics.positions[func[1]].person].gender ?? 'nb' ], scopes);
+                            if (is_position_vacant(func[1], scopes[scopes.length-1])) {
+                                left = get_localisation(data_countries[get_token(left, scopes)].politics.positions[func[1]].title[ 'neutral' ], scopes);
+                            }
+                            else {
+                                left = get_localisation(data_countries[get_token(left, scopes)].politics.positions[func[1]].title[ data_people[data_countries[get_token(left, scopes)].politics.positions[func[1]].person].gender ?? 'nb' ], scopes);
+                            }
                         }
                         break;
                     case "position_tag":
@@ -503,6 +537,9 @@ $(window).on('load', function() {
                 }
             });
         }
+        for (person in data_people) {
+            data_people[person].positions = {};
+        }
         for (country in data_countries) {
             data_countries[country].color = data_countries[country].color || `#${Math.floor(Math.random()*16777215).toString(16)}`
             data_countries[country].name = data_countries[country].name || country;
@@ -521,6 +558,18 @@ $(window).on('load', function() {
                 "government_members": [],
                 "other_positions": []
             };
+
+            for (position in data_countries[country].politics.positions) {
+                if ( !(is_position_vacant(position, country)) ) {
+                    var person = data_countries[country].politics.positions[position].person;
+                    if (data_people[person].positions[country] === undefined) {
+                        data_people[person].positions[country] = [position];
+                    }
+                    else {
+                        data_people[person].positions[country].push(position);
+                    }
+                }
+            }
 
             data_countries[country].original_name = data_countries[country].name;
             data_countries[country].original_long_name = data_countries[country].long_name;
@@ -588,6 +637,17 @@ $(window).on('load', function() {
                 //limit: { x:0, y:0, x2:1000, y2:1000 }
             }
         )
+        document.body.onmousedown = function() { 
+          ++mouseDown;
+        }
+        document.body.onmouseup = function() {
+          --mouseDown;
+        }
+        $("#map-container").on('mousemove', function() {
+            //if (mouseDown) {
+                console.log("guh");
+            //}
+        });
     }
     load_data();
 });
@@ -611,7 +671,10 @@ function get_token(key, scopes) {
                     position = token.split('.')[1];
                     scope = get_token(token.split('.')[0]);
                 }
-                if ( data_countries[scope].politics.positions.includes(position) ) {
+                else {
+                    position = get_token(token, scopes);
+                }
+                if ( has_position(position, scope) ) {
                     if ( !(is_position_vacant(position, scope)) ) {
                         return data_countries[scope].politics.positions[position].person;
                     }
@@ -771,7 +834,12 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                                 break;
                         }
                         for (entry in data) {
-                            if (run_trigger(effect.limit, scopes.concat(entry))[0]) {
+                            if (effect.limit !== undefined) {
+                                if (run_trigger(effect.limit, scopes.concat(entry))[0]) {
+                                    every.push(entry);
+                                }
+                            }
+                            else {
                                 every.push(entry);
                             }
                         }
@@ -945,6 +1013,14 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                     data_people[person].name = name;
                 }
                 break;
+            case "kill_person":
+                if (tooltip && !effect.no_tooltip) {
+                    tt += get_localisation(`${emb}<span style="color:yellow">$$${target}.name$$</span> dies<br>`, scopes);
+                }
+                if (execute && !effect.no_execute) {
+                    kill_person(target);
+                }
+                break;
             default:
                 logic_error_log(`Logic error: Effect "${effect.type}" does not exist`);
                 break;
@@ -1001,9 +1077,27 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                     local = false; 
                 }
                 break;
+            case "claims_tile":
+                tt2 = get_localisation(short_tt ? `Claim <span style="color:yellow">$$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> claims <span style="color:yellow">$$${target}.name$$</span><br>`, scopes);
+                if (data_tiles[target].claims.includes(scope)) {
+                    local = true;
+                }
+                else {
+                    local = false; 
+                }
+                break;
             case "controller":
                 tt2 = get_localisation(short_tt ? `Controlled by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.name$$</span> is controlled by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
                 if (data_tiles[scope].controller == target) {
+                    local = true;
+                }
+                else {
+                    local = false; 
+                }
+                break;
+            case "claimed_by":
+                tt2 = get_localisation(short_tt ? `Claimed by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.name$$</span> is claimed by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
+                if (data_tiles[scope].claims.includes(target)) {
                     local = true;
                 }
                 else {
@@ -1224,9 +1318,14 @@ function event_option(event_id, option) {
     run_effect( data_events[ fired_events[event_id]["event"] ].options[option].effects, fired_events[event_id]["scopes"], false, true );
 }
 function fire_event(event, scopes) {
+    console.log(event, scopes);
     var event_id = Object.keys(fired_events).length + 1;
     fired_events[event_id] = { "event": event, "scopes": scopes }
+    if (data_events[event].immediate !== undefined) {
+        run_effect(data_events[event].immediate, scopes, false, true);
+    }
     if (get_token(scopes[scopes.length-1], scopes) == data_player) {
+        pause();
         var opts = ""
         var i = 0;
         data_events[ event ].options.forEach(option => {
@@ -1306,6 +1405,18 @@ function change_tile_controller(tile, controller) {
     
     tile_style(tile);
 }
+function change_tile_claim(tile, claimant) {
+    data_tiles[tile].claims.push(claimant);
+    //if (data_tiles[tile].on_tile_controller_change !== undefined) {
+    //    for (entry of data_tiles[tile].on_tile_controller_change) {
+    //        run_effect(entry, [old_controller, controller, tile], false, true);
+    //    }
+    //}
+    //for (entry of data_on_actions["on_tile_controller_change_default"])
+    //    run_effect(entry, [old_controller, controller, tile], false, true);
+    //
+    tile_style(tile);
+}
 function has_position(position, tag) {
     return position in data_countries[tag].politics.positions;
 }
@@ -1320,5 +1431,19 @@ function is_position_vacant(position, tag) {
 }
 function is_scope(key, scopes) {
     var scope = get_token(key, scopes);
-    return (key in data_tiles || key in data_countries || key in data_people );
+    return (scope in data_tiles || scope in data_countries || scope in data_people );
+}
+function clear_position(position, tag) {
+    var person = data_countries[tag].politics.positions[position].person;
+    data_people[person].positions[tag].splice(data_people[person].positions[tag].indexOf(position), 1);
+    data_countries[tag].politics.positions[position].person = "";
+    politics_tab_generate();
+}
+function kill_person(person) {
+    for (tag in data_people[person].positions) {
+        for (position of data_people[person].positions[tag]) {
+            clear_position(position, tag);
+        }
+    }
+    politics_tab_generate();
 }
