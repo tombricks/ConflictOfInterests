@@ -4,7 +4,7 @@
         <title>Conflict of Interests</title>
         <link rel="stylesheet" href="styles.css">
         <script src="scripts/jquery-3.6.1.js"></script>
-        <script src="scripts/jquery.svg.pan.zoom.js"></script>
+        <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
         <?php
         if (isset($_GET["mods"])) {
             $mods = explode(',', $_GET["mods"]);
@@ -38,7 +38,9 @@
                 </div>
             </div>
             <div id="right-panel">
-                <div id="map-container">
+                <div id="whole-map-container">
+                    <div id="map-container">
+                    </div>
                 </div>
                 <div id="turn-box" style="position:absolute;right:8px;top:8px;width:256px;height:96px;background:red;text-align:center;padding:8px;">
                     <b id="date">gayday 69 gayember 6969</b>
