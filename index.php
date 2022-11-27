@@ -41,6 +41,10 @@
                 <div id="whole-map-container">
                     <div id="map-container">
                     </div>
+                    <svg id="svg-lines" xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 2048 1024' style="position:absolute;left:0px;top:0px;pointer-events:none;"></svg>
+                    <div id="map-icons">
+
+                    </div>
                 </div>
                 <div id="turn-box" style="position:absolute;right:8px;top:8px;width:256px;height:96px;background:red;text-align:center;padding:8px;">
                     <b id="date">gayday 69 gayember 6969</b>

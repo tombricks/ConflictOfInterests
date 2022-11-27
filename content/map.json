@@ -1,339 +1,423 @@
 {
 	"tiles": {
 		"serbia": {
-			"controller": "SER",
+			"controller": "SER", 
+			"un_owner": "SER",
 			"claims": [ "SER" ]
 		},
 		"kosovo": {
-			"controller": "KOS",
+			"controller": "KOS", 
+			"un_owner": "KOS",
 			"claims": [ "KOS", "SER" ]
 		},
 		"montenegro": {
-			"controller": "MON",
+			"controller": "MON", 
+			"un_owner": "MON",
 			"claims": [ "MON" ]
 		},
 		"slovenia": {
-			"controller": "SLO",
-			"claims": [ "SLO" ]
+			"controller": "SLV", 
+			"un_owner": "SLV",
+			"claims": [ "SLV" ]
 		},
 		"croatia": {
-			"controller": "CRO",
+			"controller": "CRO", 
+			"un_owner": "CRO",
 			"claims": [ "CRO" ]
 		},
 		"macedonia": {
-			"controller": "MAC",
+			"controller": "MAC", 
+			"un_owner": "MAC",
 			"claims": [ "MAC" ]
 		},
 		"bosnia": {
-			"controller": "BIH",
+			"controller": "BIH", 
+			"un_owner": "BIH",
 			"claims": [ "BIH" ]
 		},
 		"albania": {
-			"controller": "ALB",
+			"controller": "ALB", 
+			"un_owner": "ALB",
 			"claims": [ "ALB" ]
 		},
 		"lithuania": {
-			"controller": "LIT",
+			"controller": "LIT", 
+			"un_owner": "LIT",
 			"claims": [ "LIT" ]
 		},
 		"estonia": {
-			"controller": "EST",
+			"controller": "EST", 
+			"un_owner": "EST",
 			"claims": [ "EST" ]
 		},
 		"latvia": {
-			"controller": "LAT",
+			"controller": "LAT", 
+			"un_owner": "LAT",
 			"claims": [ "LAT" ]
 		},
 		"crimea": {
-			"controller": "RUS",
+			"controller": "RUS", 
+			"un_owner": "RUS",
 			"claims": [ "RUS", "UKR" ]
 		},
 		"belarus": {
-			"controller": "BLR",
+			"controller": "BLR", 
+			"un_owner": "BLR",
 			"claims": [ "BLR" ]
 		},
 		"moldova": {
-			"controller": "MOL",
+			"controller": "MOL", 
+			"un_owner": "MOL",
 			"claims": [ "MOL" ]
 		},
 		"transnistria": {
-			"controller": "TRN",
+			"controller": "TRN", 
+			"un_owner": "TRN",
 			"claims": [ "TRN", "MOL" ]
 		},
 		"italy": {
-			"controller": "ITA",
+			"controller": "ITA", 
+			"un_owner": "ITA",
 			"claims": [ "ITA" ]
 		},
 		"slovakia": {
-			"controller": "SLO",
+			"controller": "SLO", 
+			"un_owner": "SLO",
 			"claims": [ "SLO" ]
 		},
 		"czechia": {
-			"controller": "CZE",
+			"controller": "CZE", 
+			"un_owner": "CZE",
 			"claims": [ "CZE" ]
 		},
 		"hungary": {
-			"controller": "HUN",
+			"controller": "HUN", 
+			"un_owner": "HUN",
 			"claims": [ "HUN" ]
 		},
 		"romania": {
-			"controller": "ROM",
+			"controller": "ROM", 
+			"un_owner": "ROM",
 			"claims": [ "ROM" ]
 		},
 		"bulgaria": {
-			"controller": "BUL",
+			"controller": "BUL", 
+			"un_owner": "BUL",
 			"claims": [ "BUL" ]
 		},
 		"greece": {
-			"controller": "GRE",
+			"controller": "GRE", 
+			"un_owner": "GRE",
 			"claims": [ "GRE" ]
 		},
 		"iceland": {
-			"controller": "ICE",
+			"controller": "ICE", 
+			"un_owner": "ICE",
 			"claims": [ "ICE" ]
 		},
 		"spain": {
-			"controller": "SPA",
+			"controller": "SPA", 
+			"un_owner": "SPA",
 			"claims": [ "SPA" ]
 		},
 		"portugal": {
-			"controller": "POR",
+			"controller": "POR", 
+			"un_owner": "POR",
 			"claims": [ "POR" ]
 		},
 		"poland": {
-			"controller": "POL",
+			"controller": "POL", 
+			"un_owner": "POL",
 			"claims": [ "POL" ]
 		},
 		"denmark": {
-			"controller": "DEN",
+			"controller": "DEN", 
+			"un_owner": "DEN",
 			"claims": [ "DEN" ]
 		},
 		"greenland": {
-			"controller": "DEN",
+			"controller": "DEN", 
+			"un_owner": "DEN",
 			"claims": [ "DEN" ]
 		},
 		"germany": {
-			"controller": "GER",
+			"controller": "GER", 
+			"un_owner": "GER",
 			"claims": [ "GER" ]
 		},
 		"switzerland": {
-			"controller": "SWI",
+			"controller": "SWI", 
+			"un_owner": "SWI",
 			"claims": [ "SWI" ]
 		},
 		"austria": {
-			"controller": "AUS",
+			"controller": "AUS", 
+			"un_owner": "AUS",
 			"claims": [ "AUS" ]
 		},
 		"france": {
-			"controller": "FRA",
+			"controller": "FRA", 
+			"un_owner": "FRA",
 			"claims": [ "FRA" ]
 		},
 		"kaliningrad": {
-			"controller": "RUS",
+			"controller": "RUS", 
+			"un_owner": "RUS",
 			"claims": [ "RUS" ]
 		},
 		"netherlands": {
-			"controller": "NET",
+			"controller": "NET", 
+			"un_owner": "NET",
 			"claims": [ "NET" ]
 		},
 		"belgium": {
-			"controller": "BEL",
+			"controller": "BEL", 
+			"un_owner": "BEL",
 			"claims": [ "BEL" ]
 		},
 		"luxembourg": {
-			"controller": "LUX",
+			"controller": "LUX", 
+			"un_owner": "LUX",
 			"claims": [ "LUX" ]
 		},
 		"sweden": {
-			"controller": "SWE",
+			"controller": "SWE", 
+			"un_owner": "SWE",
 			"claims": [ "SWE" ]
 		},
 		"norway": {
-			"controller": "NOR",
+			"controller": "NOR", 
+			"un_owner": "NOR",
 			"claims": [ "NOR" ]
 		},
 		"svalbard": {
-			"controller": "NOR",
+			"controller": "NOR", 
+			"un_owner": "NOR",
 			"claims": [ "NOR" ]
 		},
 		"finland": {
-			"controller": "FIN",
+			"controller": "FIN", 
+			"un_owner": "FIN",
 			"claims": [ "FIN" ]
 		},
 		"russia": {
-			"controller": "RUS",
+			"controller": "RUS", 
+			"un_owner": "RUS",
 			"claims": [ "RUS" ]
 		},
 		"ivano-frankivsk": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"khmelnytskyi": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"ternopil": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"rivne": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"volyn": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"lviv": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"zakarpattia": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"chernivtsi": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"zhytomyr": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"vinnytsia": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"kiev": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"cherkasy": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"kirovohrad": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"chernihiv": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"odessa": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"mykolaiv": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"kherson": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"zaporizhia": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"poltava": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"sumy": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"dnipropetrovsk": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"kharkiv": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR" ]
 		},
 		"luhansk": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR", "LNR" ]
 		},
 		"donetsk": {
-			"controller": "UKR",
+			"controller": "UKR", 
+			"un_owner": "UKR",
 			"claims": [ "UKR", "DNR" ]
 		},
 		"luhansk-2022": {
-			"controller": "LNR",
+			"controller": "LNR", 
+			"un_owner": "LNR",
 			"claims": [ "LNR", "UKR" ]
 		},
 		"donetsk-2022": {
-			"controller": "DNR",
+			"controller": "DNR", 
+			"un_owner": "DNR",
 			"claims": [ "DNR", "UKR" ]
 		},
 		"northern-ireland": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"cornwall": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"london": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"se-england": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"east-england": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"east-midlands": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"sw-england": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"west-midlands": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"nw-england": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"wales": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"yorkshire": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"ne-england": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"scotland": {
-			"controller": "GBR",
+			"controller": "GBR", 
+			"un_owner": "GBR",
 			"claims": [ "GBR" ]
 		},
 		"ulster": {
-			"controller": "IRE",
+			"controller": "IRE", 
+			"un_owner": "IRE",
 			"claims": [ "IRE" ]
 		},
 		"leinster": {
-			"controller": "IRE",
+			"controller": "IRE", 
+			"un_owner": "IRE",
 			"claims": [ "IRE" ]
 		},
 		"connaught": {
-			"controller": "IRE",
+			"controller": "IRE", 
+			"un_owner": "IRE",
 			"claims": [ "IRE" ]
 		},
 		"munster": {
-			"controller": "IRE",
+			"controller": "IRE", 
+			"un_owner": "IRE",
 			"claims": [ "IRE" ]
 		}
 	},

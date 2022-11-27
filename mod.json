@@ -2,19 +2,19 @@
     "name": "Conflict of Interests VANILLA",
     "mapsvg": "assets/worldmap.svg",
     "countries": [
-        "content/countries.json"
+        "content/countries/countries.json"
     ],
     "map": [
         "content/map.json"
     ],
     "people": [
-        "content/people.json"
+        "content/people/people.json"
     ],
     "decisions": [
-        "content/decisions.json"
+        "content/decisions/decisions.json"
     ],
     "events": [
-        "content/events.json"
+        "content/events/events.json"
     ],
     "on_actions": [
         "content/on_actions.json"
