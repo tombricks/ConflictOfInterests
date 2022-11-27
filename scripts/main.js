@@ -9,6 +9,7 @@ var data_variables = {}
 var data_on_actions = { "on_tile_controller_change_default": [] }
 var localisation = {}
 var fired_events = {}
+var battles = {};
 var turn = -1;
 var schedule = {}
 var data_people = {};
@@ -25,6 +26,8 @@ var month;
 var tooltip_text = "";
 var map_style = "country";
 var map_style_context = "";
+var map_hover_tile = "";
+var map_selected_tile = "";
 var text_icons = {
     "true": '<div style="position:relative;display:inline-block;width:17px;height:17px;vertical-align:top;top:2px;"><img src="assets/texticons/yes.png" style="position:absolute;left:0px;top:0px;width:17px;height:17px"></img></div>',
     "false": '<div style="position:relative;display:inline-block;width:17px;height:17px;vertical-align:top;top:2px;"><img src="assets/texticons/no.png" style="position:absolute;left:0px;top:0px;width:17px;height:17px"></img></div>'
@@ -62,6 +65,21 @@ function return_flag(flag, width, height) {
     <img src="assets/interface/flag_overlay.png" style="position:absolute;left:0px;top:0px;width:${width}px;height:${height}px"></img>
     </div>`
 }
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+} 
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [
+      parseInt(result[1], 16),
+      parseInt(result[2], 16),
+      parseInt(result[3], 16)
+     ] : null;
+}  
 function on_tile_click(tile) {
     if (window.event.ctrlKey) {
         if (map_style == "tile_connections") {
@@ -97,7 +115,14 @@ function export_connections() {
     console.log(out);
 }
 function on_tile_over(tile) {
-    tooltip_text = `<b style="color:yellow">${get_localisation(data_tiles[tile].name)}</b><br>${return_flag(data_countries[data_tiles[tile].controller].flag, 25, 17)} ${get_localisation(data_countries[data_tiles[tile].controller].long_name)}`;
+    tooltip_text = `<b class="yellow-text">${get_localisation(data_tiles[tile].name)}</b><br>${return_flag(data_countries[data_tiles[tile].controller].flag, 25, 17)} ${get_localisation(data_countries[data_tiles[tile].controller].long_name)}`;
+    map_hover_tile = tile;
+    tile_style(tile);
+}
+function on_tile_out(tile) {
+    clear_tooltip();
+    map_hover_tile = "";
+    tile_style(tile);
 }
 function on_event_option_over(option) {
     var event_id = $(option).data('event');
@@ -148,7 +173,19 @@ function tile_style(tile) {
     var color1 = "#000000"
     switch (map_style) {
         case "country":
-            color1 = data_countries[data_tiles[tile].controller].color;
+            if (tile == map_selected_tile) {
+                var t = hexToRgb(data_countries[data_tiles[tile].controller].color);
+                t = [t[0]-20, t[1]-20, t[2]-20];
+                color1 = rgbToHex(...t);
+            }
+            else if (tile == map_hover_tile) {
+                var t = hexToRgb(data_countries[data_tiles[tile].controller].color);
+                t = [t[0]+20, t[1]+20, t[2]+20];
+                color1 = rgbToHex(...t);
+            }
+            else {
+                color1 = data_countries[data_tiles[tile].controller].color;
+            }
             break;
         case "country_selected":
             if (data_tiles[tile].controller == map_style_context) {
@@ -265,7 +302,7 @@ function politics_tab_generate() {
 
 }
 function decision_entry_over(decision) {
-    tooltip_text = `<b style="color:yellow">${get_localisation(data_decisions[decision].title)}</b><br>${get_localisation(data_decisions[decision].desc)}<br><br><u style="color:yellow">Available:</u><br>${run_trigger(data_decisions[decision].available, [data_player])[1]}<br><u style="color:yellow">Effects:</u><br>${run_effect(data_decisions[decision].effects, [data_player], true, false)}`;
+    tooltip_text = `<b class="yellow-text">${get_localisation(data_decisions[decision].title)}</b><br>${get_localisation(data_decisions[decision].desc)}<br><br><u class="yellow-text">Available:</u><br>${run_trigger(data_decisions[decision].available, [data_player])[1]}<br><u class="yellow-text">Effects:</u><br>${run_effect(data_decisions[decision].effects, [data_player], true, false)}`;
 } 
 function decision_entry_click(decision) {
     clear_tooltip();
@@ -588,7 +625,7 @@ $(window).on('load', function() {
             }
             $("#tile-"+key).attr('onclick', 'on_tile_click("'+key+'")');
             $("#tile-"+key).attr('onmouseover', 'on_tile_over("'+key+'")');
-            $("#tile-"+key).attr('onmouseout', 'clear_tooltip()');
+            $("#tile-"+key).attr('onmouseout', 'on_tile_out("'+key+'")');
             $("#tile-"+key).attr('data-tile', key);
             data_tiles[key].on_tile_controller_change = data_tiles[key].on_tile_controller_change || [];
             data_tiles[key].connections = data_tiles[key].connections || [];
@@ -615,7 +652,7 @@ $(window).on('load', function() {
         for (key in data_tiles) {
             data_variables[key] = {};
         }
-        $("svg").attr("id", "svg-map")
+        $("svg").first().attr("id", "svg-map")
         load_player(data_player);
         do_turn();
         diplomacy_tab_generate();
@@ -640,6 +677,29 @@ $(window).on('load', function() {
         }
         $("#whole-map-container").css("width", `${document.getElementById("svg-map").getAttribute('viewBox').split(' ')[2]}px`);
         $("#whole-map-container").css("height", `${document.getElementById("svg-map").getAttribute('viewBox').split(' ')[3]}px`);
+        for (tile in data_tiles) {
+            if ($(`#point-${tile}`).length != 0) {
+                $(`#point-${tile}`).addClass(`tile-points`);
+                $(`#point-${tile}`).addClass(`debug-show`);
+                for (conn of data_tiles[tile].connections) {
+                    if ($(`#point-${conn}`).length != 0) {
+                        var x_tile = 2*parseFloat($(`#point-${tile}`).attr('cx'));
+                        var y_tile = 2*parseFloat($(`#point-${tile}`).attr('cy'));
+                        var x_conn = 2*parseFloat($(`#point-${conn}`).attr('cx'));
+                        var y_conn = 2*parseFloat($(`#point-${conn}`).attr('cy'));
+                        document.getElementById("svg-lines").innerHTML += (`<line x1='${x_tile}' y1='${y_tile}' x2='${x_conn}' y2='${y_conn}' stroke='black' vector-effect='non-scaling-stroke' class="debug-show tile-line" id="line-${tile}-${conn}"/>`);
+                    }
+                }
+
+                $("#map-icons").append(`<img id="icon-battle-${tile}" class="map-icon icon-battle" src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Explosion.svg" style="left:${$(`#point-${tile}`).attr('cx')*2-1.5}px;top:${$(`#point-${tile}`).attr('cy')*2-1.5}px;position:absolute;width:3px;"></img>`)
+            }
+        }
+        $("#svg-lines").removeAttr("width");
+        $("#svg-lines").removeAttr("height");
+        $("#svg-lines").css("display", "block");
+        $("#svg-lines").css("margin", "auto");
+        $(".debug-show").hide()
+        $(".icon-battle").hide()
     }
     load_data();
 });
@@ -736,7 +796,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
             case 'set_tile_control':
                 if ((target in data_tiles) && (scope in data_countries)) {
                     if (tooltip && !effect.no_tooltip) {
-                        tt += get_localisation(short_tt ? `${emb}Becomes controller of <span style="color:yellow">$$${target}.name$$</span><br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> becomes controller of <span style="color:yellow">$$${target}.name$$</span><br>`, scopes)
+                        tt += get_localisation(short_tt ? `${emb}Becomes controller of <span class="yellow-text">$$${target}.name$$</span><br>` : `${emb}<span class="yellow-text">$$${scope}.flag$$ $$${scope}.name$$</span> becomes controller of <span class="yellow-text">$$${target}.name$$</span><br>`, scopes)
                     }
                     if (execute && !effect.no_execute) {
                         change_tile_controller(target, scope, scopes);
@@ -764,7 +824,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                         if (turns !== undefined && turns != 0) {
                             temp = ` in ${turns} turns`;
                         }
-                        tt += get_localisation(short_tt ? `${emb}Gets event <span style="color:yellow">${get_localisation(data_events[event].title)}</span>${temp}<br>` : `${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> gets event <span style="color:yellow">${get_localisation(data_events[event].title)}</span>${temp}<br>`, temp_scopes);
+                        tt += get_localisation(short_tt ? `${emb}Gets event <span class="yellow-text">${get_localisation(data_events[event].title)}</span>${temp}<br>` : `${emb}<span class="yellow-text">$$${scope}.flag$$ $$${scope}.name$$</span> gets event <span class="yellow-text">${get_localisation(data_events[event].title)}</span>${temp}<br>`, temp_scopes);
                     }
                     if (execute && !effect.no_execute) {
                     if (turns === undefined || turns == 0) {
@@ -795,8 +855,8 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
             case 'if':
                 var evald = run_trigger(effect.limit, scopes, embed+1);
                 if (tooltip && !effect.no_tooltip) {
-                    var label = (effect.label ?? false) ? get_localisation(effect.label) : `If:</span> ${evald[1]}${emb}<span style="color:yellow">Then`;
-                    tt += `${emb}<span style="color:yellow">${label}:</span><br>${run_effect(effect.effects, scopes, true, false, embed+1)}`;
+                    var label = (effect.label ?? false) ? get_localisation(effect.label) : `If:</span> ${evald[1]}${emb}<span class="yellow-text">Then`;
+                    tt += `${emb}<span class="yellow-text">${label}:</span><br>${run_effect(effect.effects, scopes, true, false, embed+1)}`;
                 }
                 if (evald[0] && execute && !effect.no_execute) {
                     run_effect(effect.effects, scopes, false, true);
@@ -842,41 +902,41 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                                         break;
                                     case 1:
                                         if (data_type == "country") {
-                                            tt += get_localisation(`${emb}<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
+                                            tt += get_localisation(`${emb}<span class="yellow-text">$$${every[0]}.flag$$ $$${every[0]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
                                         }
                                         else {
-                                            tt += get_localisation(`${emb}<span style="color:yellow">$$${every[0]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
+                                            tt += get_localisation(`${emb}<span class="yellow-text">$$${every[0]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
                                         }
                                         break;
                                     case 2:
                                         if (data_type == "country") {
-                                            tt += get_localisation(`${emb}<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$ and $$${every[1]}.flag$$ $$${every[1]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
+                                            tt += get_localisation(`${emb}<span class="yellow-text">$$${every[0]}.flag$$ $$${every[0]}.name$$ and $$${every[1]}.flag$$ $$${every[1]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
                                         }
                                         else {
-                                            tt += get_localisation(`${emb}<span style="color:yellow">$$${every[0]}.name$$ and $$${every[1]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
+                                            tt += get_localisation(`${emb}<span class="yellow-text">$$${every[0]}.name$$ and $$${every[1]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
                                         }
                                         break;
                                     case 3:
                                         if (data_type == "country") {
-                                            tt += get_localisation(`${emb}<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$ and $$${every[2]}.flag$$ $$${every[2]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
+                                            tt += get_localisation(`${emb}<span class="yellow-text">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$ and $$${every[2]}.flag$$ $$${every[2]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
                                         }
                                         else {
-                                            tt += get_localisation(`${emb}<span style="color:yellow">$$${every[0]}.name$$, $$${every[1]}.name$$ and $$${every[2]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
+                                            tt += get_localisation(`${emb}<span class="yellow-text">$$${every[0]}.name$$, $$${every[1]}.name$$ and $$${every[2]}.name$$:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
                                         }
                                         break;
                                     default:
                                         if (data_type == "country") {
-                                            tt += get_localisation(`${emb}<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$, $$${every[2]}.flag$$ $$${every[2]}.name$$ and ${every.length-3} others:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
+                                            tt += get_localisation(`${emb}<span class="yellow-text">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$, $$${every[2]}.flag$$ $$${every[2]}.name$$ and ${every.length-3} others:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
                                         }
                                         else {
-                                            tt += get_localisation(`${emb}<span style="color:yellow">$$${every[0]}.name$$, $$${every[1]}.name$$, $$${every[2]}.name$$ and ${every.length-3} others:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
+                                            tt += get_localisation(`${emb}<span class="yellow-text">$$${every[0]}.name$$, $$${every[1]}.name$$, $$${every[2]}.name$$ and ${every.length-3} others:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`)
                                         }
                                         break;
 
                                 }
                             }
                             else {
-                                tt += get_localisation(`${emb}<span style="color:yellow">${get_localisation(effect.label, scopes)}:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`, scopes)
+                                tt += get_localisation(`${emb}<span class="yellow-text">${get_localisation(effect.label, scopes)}:</span><br>${run_effect(effects, scopes.concat(every[0]), true, false, embed+1)}`, scopes)
                             }
                         }
                         if (execute && !effect.no_execute) {
@@ -892,14 +952,14 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                             if (tooltip && !effect.no_tooltip) {
                                 if (effect.label === undefined) {
                                     if (get_tag_type(tag) == "country") {
-                                        tt += get_localisation(`${emb}<span style="color:yellow">$$${tag}.flag$$ $$${tag}.name$$:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
+                                        tt += get_localisation(`${emb}<span class="yellow-text">$$${tag}.flag$$ $$${tag}.name$$:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
                                     }
                                     else {
-                                        tt += get_localisation(`${emb}<span style="color:yellow">$$${tag}.name$$:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
+                                        tt += get_localisation(`${emb}<span class="yellow-text">$$${tag}.name$$:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
                                     }
                                 }
                                 else {
-                                    tt += get_localisation(`${emb}<span style="color:yellow">${get_localisation(effect.label)}:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
+                                    tt += get_localisation(`${emb}<span class="yellow-text">${get_localisation(effect.label)}:</span><br>${run_effect(effects, scopes.concat(tag), true, false, embed+1)}`, scopes);
                                 }
                             }
                             if (execute && !effect.no_execute) {
@@ -915,7 +975,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 break;
             case "set_country_long_name":
                 if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(`${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.long_name$$</span> becomes the <span style="color:yellow">${get_localisation(get_token(effect.name, scopes), scopes)}</span><br>`, scopes);
+                    tt += get_localisation(`${emb}<span class="yellow-text">$$${scope}.flag$$ $$${scope}.long_name$$</span> becomes the <span class="yellow-text">${get_localisation(get_token(effect.name, scopes), scopes)}</span><br>`, scopes);
                 }
                 if (execute && !effect.no_execute) {
                     if (effect.instance) {
@@ -929,7 +989,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 break;
             case "set_country_name":
                 if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(`${emb}<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> becomes the <span style="color:yellow">${get_localisation(get_token(effect.name, scopes), scopes)}</span><br>`, scopes);
+                    tt += get_localisation(`${emb}<span class="yellow-text">$$${scope}.flag$$ $$${scope}.name$$</span> becomes the <span class="yellow-text">${get_localisation(get_token(effect.name, scopes), scopes)}</span><br>`, scopes);
                 }
                 if (execute && !effect.no_execute) {
                     if (effect.instance) {
@@ -945,10 +1005,10 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 if (has_position(position, scope)) {
                     if (tooltip && !effect.no_tooltip) {
                         if ($.type(effect.title) === "string") {
-                            tt += get_localisation(`${emb}The <span style="color:yellow">$$${scope}.position_title,${position}$$</span> position becomes the <span style="color:yellow">${get_localisation(effect.title, scopes)}</span><br>`, scopes);
+                            tt += get_localisation(`${emb}The <span class="yellow-text">$$${scope}.position_title,${position}$$</span> position becomes the <span class="yellow-text">${get_localisation(effect.title, scopes)}</span><br>`, scopes);
                         }
                         else {
-                            tt += get_localisation(`${emb}The <span style="color:yellow">$$${scope}.position_title,${position}$$</span> position becomes the <span style="color:yellow">${get_localisation((effect.title[data_people[data_countries[scope].politics.positions[position].person].gender]) ?? 'm', scopes)}</span><br>`, scopes);
+                            tt += get_localisation(`${emb}The <span class="yellow-text">$$${scope}.position_title,${position}$$</span> position becomes the <span class="yellow-text">${get_localisation((effect.title[data_people[data_countries[scope].politics.positions[position].person].gender]) ?? 'm', scopes)}</span><br>`, scopes);
                         }
                     }
                     if (execute && !effect.no_execute) {
@@ -968,10 +1028,10 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 if (has_position(position, scope)) {
                     if (tooltip && !effect.no_tooltip) {
                         if (!(person in data_people) || person === undefined || person.trim() == '') {
-                            tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">vacant</span><br>`, scopes);
+                            tt += get_localisation(`${emb}<span class="yellow-text">$$${person}.name$$</span> becomes <span class="yellow-text">vacant</span><br>`, scopes);
                         }
                         else {
-                            tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">${get_localisation(get_position_title(position, scope, data_people[person].gender), scopes)}</span><br>`, scopes);
+                            tt += get_localisation(`${emb}<span class="yellow-text">$$${person}.name$$</span> becomes <span class="yellow-text">${get_localisation(get_position_title(position, scope, data_people[person].gender), scopes)}</span><br>`, scopes);
                         }
                     }
                     if (execute && !effect.no_execute) {
@@ -989,7 +1049,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 var person = get_token(effect.person, scopes);
                 var gender = get_token(effect.gender, scopes);
                 if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">${get_localisation("gender_"+gender, scopes)}</span><br>`, scopes);
+                    tt += get_localisation(`${emb}<span class="yellow-text">$$${person}.name$$</span> becomes <span class="yellow-text">${get_localisation("gender_"+gender, scopes)}</span><br>`, scopes);
                 }
                 if (execute && !effect.no_execute) {
                     data_people[person].gender = gender;
@@ -999,7 +1059,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 var person = get_token(effect.person, scopes);
                 var name = get_token(effect.name, scopes);
                 if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(`${emb}<span style="color:yellow">$$${person}.name$$</span> becomes <span style="color:yellow">${get_localisation(name, scopes)}</span><br>`, scopes);
+                    tt += get_localisation(`${emb}<span class="yellow-text">$$${person}.name$$</span> becomes <span class="yellow-text">${get_localisation(name, scopes)}</span><br>`, scopes);
                 }
                 if (execute && !effect.no_execute) {
                     data_people[person].name = name;
@@ -1007,7 +1067,7 @@ function run_effect(script, scopes, tooltip=true, execute=true, embed=0) {
                 break;
             case "kill_person":
                 if (tooltip && !effect.no_tooltip) {
-                    tt += get_localisation(`${emb}<span style="color:yellow">$$${target}.name$$</span> dies<br>`, scopes);
+                    tt += get_localisation(`${emb}<span class="yellow-text">$$${target}.name$$</span> dies<br>`, scopes);
                 }
                 if (execute && !effect.no_execute) {
                     kill_person(target);
@@ -1061,7 +1121,7 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 local = true;
                 break;
             case "controls_tile":
-                tt2 = get_localisation(short_tt ? `Controls <span style="color:yellow">$$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> controls <span style="color:yellow">$$${target}.name$$</span><br>`, scopes);
+                tt2 = get_localisation(short_tt ? `Controls <span class="yellow-text">$$${target}.name$$</span><br>` : `<span class="yellow-text">$$${scope}.flag$$ $$${scope}.name$$</span> controls <span class="yellow-text">$$${target}.name$$</span><br>`, scopes);
                 if (data_tiles[target].controller == scope) {
                     local = true;
                 }
@@ -1070,7 +1130,7 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 }
                 break;
             case "claims_tile":
-                tt2 = get_localisation(short_tt ? `Claim <span style="color:yellow">$$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.flag$$ $$${scope}.name$$</span> claims <span style="color:yellow">$$${target}.name$$</span><br>`, scopes);
+                tt2 = get_localisation(short_tt ? `Claim <span class="yellow-text">$$${target}.name$$</span><br>` : `<span class="yellow-text">$$${scope}.flag$$ $$${scope}.name$$</span> claims <span class="yellow-text">$$${target}.name$$</span><br>`, scopes);
                 if (data_tiles[target].claims.includes(scope)) {
                     local = true;
                 }
@@ -1079,7 +1139,7 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 }
                 break;
             case "controller":
-                tt2 = get_localisation(short_tt ? `Controlled by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.name$$</span> is controlled by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
+                tt2 = get_localisation(short_tt ? `Controlled by <span class="yellow-text">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span class="yellow-text">$$${scope}.name$$</span> is controlled by <span class="yellow-text">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
                 if (data_tiles[scope].controller == target) {
                     local = true;
                 }
@@ -1088,7 +1148,7 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 }
                 break;
             case "claimed_by":
-                tt2 = get_localisation(short_tt ? `Claimed by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span style="color:yellow">$$${scope}.name$$</span> is claimed by <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
+                tt2 = get_localisation(short_tt ? `Claimed by <span class="yellow-text">$$${target}.flag$$ $$${target}.name$$</span><br>` : `<span class="yellow-text">$$${scope}.name$$</span> is claimed by <span class="yellow-text">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
                 if (data_tiles[scope].claims.includes(target)) {
                     local = true;
                 }
@@ -1097,7 +1157,7 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                 }
                 break;
             case "tag":
-                tt2 = get_localisation(`Is <span style="color:yellow">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
+                tt2 = get_localisation(`Is <span class="yellow-text">$$${target}.flag$$ $$${target}.name$$</span><br>`, scopes);
                 var tag = get_token(trigger.tag, scopes);
                 if (tag == scope) {
                     local = true;
@@ -1166,41 +1226,41 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                                         break;
                                     case 1:
                                         if (data_type == "country") { 
-                                            tt2 = get_localisation(`<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                            tt2 = get_localisation(`<span class="yellow-text">$$${every[0]}.flag$$ $$${every[0]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
                                         }
                                         else {
-                                            tt2 = get_localisation(`<span style="color:yellow">$$${every[0]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                            tt2 = get_localisation(`<span class="yellow-text">$$${every[0]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
                                         }
                                         break;
                                     case 2:
                                         if (data_type == "country") {
-                                            tt2 = get_localisation(`<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$ ${data_type_c2} $$${every[1]}.flag$$ $$${every[1]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                            tt2 = get_localisation(`<span class="yellow-text">$$${every[0]}.flag$$ $$${every[0]}.name$$ ${data_type_c2} $$${every[1]}.flag$$ $$${every[1]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
                                         }
                                         else {
-                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.name$$ ${data_type_c2} $$${every[1]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                            tt2 = get_localisation(`${new_emb}<span class="yellow-text">$$${every[0]}.name$$ ${data_type_c2} $$${every[1]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
                                         }
                                         break;
                                     case 3:
                                         if (data_type == "country") {
-                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$ ${data_type_c2} $$${every[2]}.flag$$ $$${every[2]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                            tt2 = get_localisation(`${new_emb}<span class="yellow-text">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$ ${data_type_c2} $$${every[2]}.flag$$ $$${every[2]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
                                         }
                                         else {
-                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.name$$, $$${every[1]}.name$$ ${data_type_c2} $$${every[2]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                            tt2 = get_localisation(`${new_emb}<span class="yellow-text">$$${every[0]}.name$$, $$${every[1]}.name$$ ${data_type_c2} $$${every[2]}.name$$:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
                                         }
                                         break;
                                     default:
                                         if (data_type == "country") {
-                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$, $$${every[2]}.flag$$ $$${every[2]}.name$$ ${data_type_c2} ${every.length-3} others:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                            tt2 = get_localisation(`${new_emb}<span class="yellow-text">$$${every[0]}.flag$$ $$${every[0]}.name$$, $$${every[1]}.flag$$ $$${every[1]}.name$$, $$${every[2]}.flag$$ $$${every[2]}.name$$ ${data_type_c2} ${every.length-3} others:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
                                         }
                                         else {
-                                            tt2 = get_localisation(`${new_emb}<span style="color:yellow">$$${every[0]}.name$$, $$${every[1]}.name$$, $$${every[2]}.name$$ ${data_type_c2} ${every.length-3} others:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
+                                            tt2 = get_localisation(`${new_emb}<span class="yellow-text">$$${every[0]}.name$$, $$${every[1]}.name$$, $$${every[2]}.name$$ ${data_type_c2} ${every.length-3} others:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`)
                                         }
                                         break;
 
                                 }
                             }
                             else {
-                                tt2 = get_localisation(`<span style="color:yellow">${get_localisation(effect.label, scopes)}:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`, scopes)
+                                tt2 = get_localisation(`<span class="yellow-text">${get_localisation(effect.label, scopes)}:</span><br>${new_emb}${run_trigger(new_trigger, scopes.concat(every[0]), embed+1, true)[1]}`, scopes)
                             }
                         }
                         for (entry of every) {
@@ -1223,14 +1283,14 @@ function run_trigger(trigger_block, scopes, embed=0, first=true) {
                         if (tooltip && !trigger.no_tooltip) {
                             if (trigger.label === undefined) {
                                 if (get_tag_type(tag) == "country") {
-                                    tt2 = get_localisation(`<span style="color:yellow">$$${tag}.flag$$ $$${tag}.name$$:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
+                                    tt2 = get_localisation(`<span class="yellow-text">$$${tag}.flag$$ $$${tag}.name$$:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
                                 }
                                 else {
-                                    tt2 = get_localisation(`<span style="color:yellow">$$${tag}.name$$:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
+                                    tt2 = get_localisation(`<span class="yellow-text">$$${tag}.name$$:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
                                 }
                             }
                             else {
-                                tt2 = get_localisation(`<span style="color:yellow">${get_localisation(trigger.label)}:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
+                                tt2 = get_localisation(`<span class="yellow-text">${get_localisation(trigger.label)}:</span><br>${run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[1]}`, scopes);
                             }
                         }
                         local = run_trigger(new_trigger, scopes.concat(tag), embed+1, true)[0];
