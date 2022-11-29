@@ -82,5 +82,7 @@
     "tile_ulster": "Cavan, Donegal and Monaghan",
     "tile_leinster": "Leinster",
     "tile_connaught": "Connaught",
-    "tile_munster": "Munster"
+    "tile_munster": "Munster",
+    "tile_st-martin-fr": "Saint Martin",
+    "tile_st-martin-nl": "Sint Maarten"
 }

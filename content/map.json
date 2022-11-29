@@ -419,6 +419,16 @@
 			"controller": "IRE", 
 			"un_owner": "IRE",
 			"claims": [ "IRE" ]
+		},
+		"st-martin-fr": {
+			"controller": "FRA", 
+			"un_owner": "FRA",
+			"claims": [ "FRA" ]
+		},
+		"st-martin-nl": {
+			"controller": "NET", 
+			"un_owner": "NET",
+			"claims": [ "NET" ]
 		}
 	},
 	"connections": {
@@ -956,6 +966,12 @@
 		"munster": [
 		  "leinster",
 		  "connaught"
+		],
+		"st-martin-fr": [
+		  "st-martin-nl"
+		],
+		"st-martin-nl": [
+		  "st-martin-fr"
 		]
 	}
 }
